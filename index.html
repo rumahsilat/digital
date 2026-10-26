@@ -592,19 +592,22 @@
 
   <!-- ===== SKRIP AUTH (Firebase) ===== -->
   <script type="module">
-    import { firebaseConfig } from "./firebase-config.js";
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-      signOut, sendEmailVerification, sendPasswordResetEmail, updateProfile,
-      GoogleAuthProvider, signInWithPopup
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-      getFirestore, doc, getDoc, setDoc, serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    // ===== KONFIGURASI FIREBASE (sudah tertanam; tidak perlu file terpisah) =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyClyUdzd2kp8qX5TFcvwyOrUACsuPznnv0",
+      authDomain: "rumah-digital-pencak-silat.firebaseapp.com",
+      projectId: "rumah-digital-pencak-silat",
+      storageBucket: "rumah-digital-pencak-silat.firebasestorage.app",
+      messagingSenderId: "1005119385237",
+      appId: "1:1005119385237:web:6241756efc8426efbcf59c"
+    };
+    const FB = "https://www.gstatic.com/firebasejs/10.12.2/";
 
     const $ = id => document.getElementById(id);
     const configured = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("ISI_");
+
+    // Cegah form dikirim ulang/reload halaman apa pun yang terjadi.
+    ["formLogin", "formRegister", "formForgot"].forEach(id => $(id).addEventListener("submit", e => e.preventDefault()));
 
     const modal = $("authModal");
     const errBox = $("authError");
@@ -680,7 +683,19 @@
       $("btnGoogle").addEventListener("click", warn);
       $("btnLogout").addEventListener("click", () => {});
       console.warn("firebase-config.js belum diisi.");
-    } else {
+    } else try {
+      const [{ initializeApp }, A, S] = await Promise.all([
+        import(FB + "firebase-app.js"),
+        import(FB + "firebase-auth.js"),
+        import(FB + "firebase-firestore.js")
+      ]);
+      const {
+        getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+        signOut, sendEmailVerification, sendPasswordResetEmail, updateProfile,
+        GoogleAuthProvider, signInWithPopup
+      } = A;
+      const { getFirestore, doc, getDoc, setDoc, serverTimestamp } = S;
+
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       auth.languageCode = "id";
@@ -822,6 +837,11 @@
           if (document.getElementById("view-akun").classList.contains("active")) navigate("beranda");
         }
       });
+    } catch (loadErr) {
+      console.error("Firebase gagal dimuat:", loadErr);
+      const warn = () => { openModal("login"); showErr("Layanan login gagal dimuat. Periksa koneksi internet, matikan pemblokir iklan/VPN, lalu muat ulang halaman (Ctrl+F5)."); };
+      ["formLogin", "formRegister", "formForgot"].forEach(id => $(id).addEventListener("submit", warn));
+      $("btnGoogle").addEventListener("click", warn);
     }
   </script>
 </body>
