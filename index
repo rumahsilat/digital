@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173c32">
+  <meta name="description" content="Rumah Digital Pencak Silat Indonesia — ruang bersama untuk mengenal perguruan, tradisi, jurus, dan budaya pencak silat Nusantara.">
+  <title>Rumah Digital Pencak Silat Indonesia</title>
+  <style>
+    :root {
+      --green-950: #102a24; --green-900: #173c32; --green-800: #215445; --green-100: #e7f0eb;
+      --gold: #d9ad5b; --ink: #17231f; --muted: #66736d; --paper: #f7f8f5; --white: #fff;
+      --line: #e1e7e2; --danger: #b3261e; --shadow: 0 12px 34px rgba(16,42,36,.08); --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--paper); line-height: 1.55; }
+    button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; }
+    .topbar { background: var(--green-950); color: #fff; font-size: .82rem; }
+    .topbar-inner { max-width: 1180px; margin: auto; padding: 9px 22px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .site-header { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px); }
+    .nav-wrap { max-width: 1180px; margin: auto; padding: 13px 22px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 230px; }
+    .brand-mark { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; color: #fff; background: var(--green-900); font-size: 1.35rem; box-shadow: inset 0 0 0 2px rgba(217,173,91,.45); }
+    .brand-name { font-weight: 850; line-height: 1.15; letter-spacing: -.025em; }
+    .brand-name small { display: block; margin-top: 4px; color: var(--muted); font-weight: 600; letter-spacing: .02em; font-size: .69rem; }
+    .nav-links { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+    .nav-link { border: 0; color: #43534c; background: transparent; border-radius: 10px; padding: 9px 11px; font-size: .91rem; font-weight: 650; }
+    .nav-link:hover, .nav-link.active { background: var(--green-100); color: var(--green-900); }
+    .nav-auth { display: flex; align-items: center; gap: 6px; margin-left: 6px; padding-left: 10px; border-left: 1px solid var(--line); }
+    .nav-auth .btn { padding: 8px 13px; font-size: .88rem; }
+    .user-chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px 5px 6px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: .88rem; color: var(--green-900); }
+    .user-chip .avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--green-900); color: var(--gold); display: grid; place-items: center; font-size: .8rem; font-weight: 800; }
+    .nav-toggle { display: none; border: 1px solid var(--line); background: #fff; border-radius: 11px; padding: 8px 11px; }
+    main { max-width: 1180px; margin: auto; padding: 26px 22px 60px; }
+    .hero { position: relative; overflow: hidden; min-height: 390px; padding: clamp(28px, 5vw, 58px); border-radius: 28px; color: #fff; background: radial-gradient(circle at 85% 20%, rgba(217,173,91,.25), transparent 27%), linear-gradient(115deg, #102a24 0%, #1d5141 65%, #28624e 100%); display: grid; grid-template-columns: 1.25fr .75fr; align-items: center; gap: 22px; box-shadow: var(--shadow); }
+    .hero:after { content: "᯽"; position: absolute; right: 3%; bottom: -100px; font-size: 25rem; line-height: 1; color: rgba(255,255,255,.045); pointer-events: none; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--gold); font-size: .78rem; text-transform: uppercase; letter-spacing: .15em; font-weight: 800; }
+    .eyebrow:before { content: ""; width: 24px; height: 2px; background: currentColor; }
+    h1 { font-size: clamp(2.15rem, 4.6vw, 4.25rem); line-height: 1.04; letter-spacing: -.05em; margin: 17px 0; max-width: 720px; }
+    .hero p { max-width: 640px; color: #dce9e2; font-size: 1.06rem; margin: 0 0 24px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 12px; padding: 11px 16px; font-weight: 750; transition: transform .15s, background .15s; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: .6; cursor: wait; transform: none; }
+    .btn-primary { background: var(--gold); color: #1e2d25; }
+    .btn-primary:hover { background: #e8c477; }
+    .btn-dark { background: var(--green-900); color: #fff; }
+    .btn-dark:hover { background: var(--green-800); }
+    .btn-light { color: #fff; background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.28); }
+    .btn-outline { background: #fff; border-color: var(--line); color: var(--green-900); }
+    .btn-block { width: 100%; }
+    .hero-emblem { position: relative; z-index: 1; display: grid; place-items: center; min-height: 250px; }
+    .emblem-ring { width: min(270px, 100%); aspect-ratio: 1; border: 1px solid rgba(217,173,91,.6); border-radius: 50%; display: grid; place-items: center; position: relative; background: radial-gradient(circle, rgba(255,255,255,.08), transparent 68%); }
+    .emblem-ring:before, .emblem-ring:after { content: ""; position: absolute; inset: 15px; border: 1px dashed rgba(255,255,255,.25); border-radius: 50%; }
+    .emblem-ring:after { inset: 36px; border-style: solid; border-color: rgba(217,173,91,.4); }
+    .emblem-symbol { font-size: 6.4rem; color: var(--gold); text-shadow: 0 8px 24px rgba(0,0,0,.25); }
+    .emblem-caption { position: absolute; bottom: 22px; color: #dce9e2; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; }
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 18px 0 38px; }
+    .stat { background: #fff; border: 1px solid var(--line); border-radius: 15px; padding: 16px 18px; }
+    .stat strong { display: block; font-size: 1.1rem; color: var(--green-900); }
+    .stat span { color: var(--muted); font-size: .84rem; }
+    .section { margin-top: 42px; scroll-margin-top: 100px; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 18px; margin-bottom: 18px; }
+    .section-heading h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.15rem); letter-spacing: -.035em; }
+    .section-heading p { margin: 6px 0 0; color: var(--muted); max-width: 650px; }
+    .text-link { color: var(--green-800); font-weight: 750; border: 0; background: transparent; white-space: nowrap; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .feature-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; min-height: 190px; box-shadow: 0 4px 15px rgba(16,42,36,.025); }
+    .feature-icon { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px; background: var(--green-100); color: var(--green-900); font-size: 1.35rem; margin-bottom: 15px; }
+    .feature-card h3 { margin: 0 0 7px; font-size: 1.08rem; }
+    .feature-card p { margin: 0 0 12px; color: var(--muted); font-size: .92rem; }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0; }
+    .search-box { flex: 1; min-width: 220px; display: flex; gap: 9px; align-items: center; padding: 0 13px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+    .search-box span { color: var(--muted); }
+    .search-box input { width: 100%; padding: 12px 0; border: 0; outline: 0; background: transparent; color: var(--ink); }
+    .filter-select { border: 1px solid var(--line); border-radius: 12px; padding: 0 12px; min-height: 45px; color: var(--ink); background: #fff; }
+    .directory-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 15px; }
+    .org-card { border: 1px solid var(--line); background: #fff; border-radius: var(--radius); overflow: hidden; transition: transform .15s, box-shadow .15s; }
+    .org-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .org-cover { min-height: 112px; padding: 18px; color: #fff; display: flex; justify-content: space-between; align-items: start; background: linear-gradient(135deg, #1a493b, #39745c); }
+    .org-cover.gold { background: linear-gradient(135deg, #6d4c20, #b28a45); }
+    .org-cover.blue { background: linear-gradient(135deg, #243e52, #4f7181); }
+    .org-symbol { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid rgba(255,255,255,.45); border-radius: 15px; font-size: 1.45rem; }
+    .demo-tag { font-size: .68rem; font-weight: 800; letter-spacing: .07em; border-radius: 999px; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.3); padding: 5px 8px; }
+    .org-body { padding: 18px; }
+    .org-body h3 { margin: 0 0 4px; font-size: 1.06rem; }
+    .org-meta { color: var(--muted); font-size: .82rem; margin-bottom: 11px; }
+    .org-body p { color: #56645d; font-size: .9rem; margin: 0 0 15px; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
+    .tag { font-size: .73rem; background: #f0f4f0; color: #3d594c; padding: 5px 8px; border-radius: 7px; }
+    .card-actions { display: flex; gap: 8px; }
+    .card-actions .btn { padding: 8px 11px; font-size: .84rem; flex: 1; }
+    .empty-state { grid-column: 1/-1; background: #fff; border: 1px dashed #c8d4cc; padding: 30px; border-radius: 16px; text-align: center; color: var(--muted); }
+    .journey { background: var(--green-950); color: #fff; border-radius: 24px; padding: clamp(24px,4vw,42px); display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: center; }
+    .journey h2 { margin: 10px 0; font-size: clamp(1.7rem,3.4vw,2.6rem); line-height: 1.12; letter-spacing: -.04em; }
+    .journey p { color: #c7d8cf; }
+    .journey-list { display: grid; gap: 10px; }
+    .journey-item { display: flex; gap: 13px; padding: 13px; border: 1px solid rgba(255,255,255,.13); background: rgba(255,255,255,.04); border-radius: 13px; }
+    .journey-num { flex: 0 0 31px; height: 31px; border-radius: 10px; background: var(--gold); color: var(--green-950); display: grid; place-items: center; font-weight: 850; }
+    .journey-item strong { display: block; font-size: .94rem; }
+    .journey-item span { color: #c7d8cf; font-size: .82rem; }
+    .contribute { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 20px; background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 24px; }
+    .contribute h3 { margin: 0 0 6px; }
+    .contribute p { margin: 0; color: var(--muted); max-width: 700px; }
+    .notice { border-left: 4px solid var(--gold); padding: 12px 15px; background: #fff8e9; border-radius: 0 12px 12px 0; color: #624d25; font-size: .88rem; margin-top: 17px; }
+    footer { background: #fff; border-top: 1px solid var(--line); }
+    .footer-inner { max-width: 1180px; margin: auto; padding: 24px 22px; display: flex; justify-content: space-between; gap: 15px; flex-wrap: wrap; color: var(--muted); font-size: .82rem; }
+    .footer-inner strong { color: var(--green-900); }
+    .view { display: none; }
+    .view.active { display: block; }
+    .page-header { padding: 25px 0 10px; }
+    .page-header h1 { font-size: clamp(2rem,4vw,3.2rem); color: var(--green-950); margin: 10px 0; }
+    .page-header p { color: var(--muted); max-width: 720px; }
+    .back-button { border: 0; background: transparent; color: var(--green-800); font-weight: 750; padding: 8px 0; }
+    .detail-panel { display: grid; grid-template-columns: .8fr 1.2fr; gap: 24px; background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 24px; margin-top: 15px; }
+    .detail-art { min-height: 240px; display: grid; place-items: center; border-radius: 17px; background: linear-gradient(135deg, #173c32, #39745c); color: var(--gold); font-size: 6rem; }
+    .detail-content h2 { margin: 0 0 6px; }
+    .detail-content p { color: var(--muted); }
+    .detail-meta { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin: 18px 0; }
+    .detail-meta div { background: var(--paper); border-radius: 11px; padding: 12px; }
+    .detail-meta small { display: block; color: var(--muted); }
+    .detail-meta strong { font-size: .92rem; }
+    .disclaimer { margin-top: 15px; padding: 12px 14px; background: #fff8e9; border-radius: 12px; font-size: .85rem; color: #624d25; }
+    .simple-panel { border: 1px solid var(--line); background: #fff; border-radius: 18px; padding: 24px; }
+    .simple-panel h2 { margin-top: 0; }
+    .simple-panel li { margin: 8px 0; }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: var(--green-950); color: #fff; padding: 12px 17px; border-radius: 12px; box-shadow: var(--shadow); z-index: 100; transition: .2s; max-width: calc(100% - 30px); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    /* ===== AUTH ===== */
+    .modal-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(16,42,36,.55); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 16px; }
+    .modal-backdrop.open { display: flex; }
+    .modal { width: 100%; max-width: 430px; max-height: 94vh; overflow-y: auto; background: #fff; border-radius: 22px; padding: 26px; box-shadow: 0 24px 60px rgba(0,0,0,.25); position: relative; }
+    .modal-close { position: absolute; top: 14px; right: 14px; border: 0; background: var(--green-100); width: 34px; height: 34px; border-radius: 50%; font-size: 1.1rem; color: var(--green-900); }
+    .modal h2 { margin: 6px 0 4px; letter-spacing: -.03em; }
+    .modal .sub { color: var(--muted); font-size: .9rem; margin: 0 0 16px; }
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--green-100); border-radius: 12px; padding: 4px; margin: 14px 0 18px; }
+    .tab { border: 0; background: transparent; border-radius: 9px; padding: 9px; font-weight: 750; color: #43534c; }
+    .tab.active { background: #fff; color: var(--green-900); box-shadow: 0 2px 8px rgba(16,42,36,.1); }
+    .field { margin-bottom: 13px; }
+    .field label { display: block; font-size: .83rem; font-weight: 700; margin-bottom: 5px; color: #34463f; }
+    .field input { width: 100%; padding: 11px 13px; border: 1px solid #cfd9d3; border-radius: 11px; outline: 0; background: #fff; color: var(--ink); }
+    .field input:focus { border-color: var(--green-800); box-shadow: 0 0 0 3px rgba(33,84,69,.15); }
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 62px; }
+    .pw-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--green-800); font-weight: 700; font-size: .78rem; padding: 6px 8px; }
+    .form-error { display: none; background: #fdecea; color: var(--danger); border-radius: 10px; padding: 10px 12px; font-size: .86rem; margin-bottom: 12px; }
+    .form-error.show { display: block; }
+    .form-ok { display: none; background: #e7f4ec; color: #1c5b38; border-radius: 10px; padding: 10px 12px; font-size: .86rem; margin-bottom: 12px; }
+    .form-ok.show { display: block; }
+    .divider { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: .8rem; margin: 16px 0; }
+    .divider:before, .divider:after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .link-btn { border: 0; background: transparent; color: var(--green-800); font-weight: 700; font-size: .86rem; padding: 0; }
+    .row-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .small-note { font-size: .78rem; color: var(--muted); margin-top: 12px; text-align: center; }
+    .badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: .74rem; font-weight: 800; }
+    .badge.ok { background: #e7f4ec; color: #1c5b38; }
+    .badge.warn { background: #fff3d6; color: #7a5a14; }
+    .account-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin: 16px 0; }
+    .account-grid div { background: var(--paper); border-radius: 11px; padding: 12px; }
+    .account-grid small { display: block; color: var(--muted); }
+    .hidden { display: none !important; }
+
+    @media (max-width: 900px) {
+      .nav-wrap { flex-wrap: wrap; }
+      .nav-toggle { display: block; }
+      .nav-links { display: none; width: 100%; align-items: stretch; flex-direction: column; }
+      .nav-links.open { display: flex; }
+      .nav-link { text-align: left; }
+      .nav-auth { margin: 6px 0 0; padding: 10px 0 0; border-left: 0; border-top: 1px solid var(--line); }
+      .hero { grid-template-columns: 1fr; }
+      .hero-emblem { display: none; }
+      .feature-grid, .directory-grid { grid-template-columns: repeat(2,1fr); }
+      .journey { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      main { padding: 17px 14px 42px; }
+      .topbar-inner, .nav-wrap, .footer-inner { padding-left: 14px; padding-right: 14px; }
+      .brand { min-width: 0; }
+      .brand-name { font-size: .91rem; }
+      .brand-name small { font-size: .62rem; }
+      .hero { padding: 27px 22px; border-radius: 21px; min-height: 0; }
+      h1 { font-size: 2.25rem; }
+      .stats { gap: 8px; }
+      .stat { padding: 12px; }
+      .stat strong { font-size: .95rem; }
+      .stat span { font-size: .75rem; }
+      .feature-grid, .directory-grid { grid-template-columns: 1fr; }
+      .section-heading { align-items: start; flex-direction: column; }
+      .contribute { grid-template-columns: 1fr; }
+      .detail-panel { grid-template-columns: 1fr; padding: 15px; }
+      .detail-art { min-height: 160px; }
+      .detail-meta, .account-grid { grid-template-columns: 1fr 1fr; }
+      .modal { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span>Ruang bersama untuk warisan pencak silat Nusantara</span>
+      <span>PROTOTIPE · DATA CONTOH</span>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="#beranda" data-nav="beranda" aria-label="Rumah Digital Pencak Silat Indonesia, beranda">
+        <span class="brand-mark" aria-hidden="true">᯽</span>
+        <span class="brand-name">Rumah Digital Pencak Silat<small>INDONESIA · JELAJAHI WARISAN NUSANTARA</small></span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">☰ Menu</button>
+      <nav class="nav-links" id="navLinks" aria-label="Navigasi utama">
+        <button class="nav-link active" data-nav="beranda">Beranda</button>
+        <button class="nav-link" data-nav="jelajah">Jelajah Nusantara</button>
+        <button class="nav-link" data-nav="direktori">Direktori Perguruan</button>
+        <button class="nav-link" data-nav="ensiklopedia">Ensiklopedia</button>
+        <button class="nav-link" data-nav="game">Game Center</button>
+        <button class="nav-link" data-nav="kontribusi">Kontribusi</button>
+        <div class="nav-auth" id="navAuth">
+          <button class="btn btn-outline" id="btnOpenLogin" type="button">Masuk</button>
+          <button class="btn btn-dark" id="btnOpenRegister" type="button">Daftar</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="view active" id="view-beranda" aria-labelledby="hero-title">
+      <div class="hero">
+        <div>
+          <span class="eyebrow">Satu rumah, banyak tradisi</span>
+          <h1 id="hero-title">Jelajahi kekayaan pencak silat Indonesia.</h1>
+          <p>Kenali perguruan, pelajari ragam gerak, temukan cerita budaya, dan ikuti petualangan yang merayakan keberagaman pencak silat Nusantara.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" data-nav="direktori">Jelajahi Perguruan <span aria-hidden="true">→</span></button>
+            <button class="btn btn-light" data-nav="game">Masuk ke Game Center</button>
+            <button class="btn btn-light" id="heroRegister" type="button">Gabung Sekarang</button>
+          </div>
+        </div>
+        <div class="hero-emblem" aria-hidden="true">
+          <div class="emblem-ring">
+            <span class="emblem-symbol">᯽</span>
+            <span class="emblem-caption">Gerak · Nilai · Budaya</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats" aria-label="Ringkasan platform">
+        <div class="stat"><strong>Beragam tradisi</strong><span>Ruang untuk banyak perguruan</span></div>
+        <div class="stat"><strong>Belajar & bermain</strong><span>Pengetahuan di luar pertandingan</span></div>
+        <div class="stat"><strong>Kontribusi bersama</strong><span>Konten melalui proses verifikasi</span></div>
+      </div>
+
+      <section class="section" aria-labelledby="fitur-title">
+        <div class="section-heading">
+          <div><h2 id="fitur-title">Satu platform, banyak cara menjelajah</h2><p>Dirancang sebagai rumah digital pencak silat: dari dokumentasi hingga pengalaman bermain.</p></div>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card"><div class="feature-icon" aria-hidden="true">⌖</div><h3>Jelajah Nusantara</h3><p>Temukan cerita, wilayah, dan tradisi yang terhubung dengan pencak silat.</p></article>
+          <article class="feature-card"><div class="feature-icon" aria-hidden="true">⌂</div><h3>Direktori Perguruan</h3><p>Kenali profil, sejarah, sumber informasi, dan materi yang disetujui perguruan.</p></article>
+          <article class="feature-card"><div class="feature-icon" aria-hidden="true">▤</div><h3>Ensiklopedia Silat</h3><p>Ruang pengetahuan untuk istilah, tokoh, filosofi, jurus, dan budaya.</p></article>
+          <article class="feature-card"><div class="feature-icon" aria-hidden="true">✦</div><h3>Akademi Jurus</h3><p>Materi visual dan pembelajaran yang dikurasi bersama kontributor berwenang.</p></article>
+          <article class="feature-card"><div class="feature-icon" aria-hidden="true">🎮</div><h3>Game Center</h3><p>Mulai dari kuis dan tantangan ringan menuju petualangan 2D.</p></article>
+          <article class="feature-card"><div class="feature-icon" aria-hidden="true">♧</div><h3>Komunitas</h3><p>Tempat mengusulkan materi, berbagi cerita, dan mengenalkan kegiatan.</p></article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="pilihan-title">
+        <div class="section-heading">
+          <div><h2 id="pilihan-title">Mulai dari direktori perguruan</h2><p>Data berikut hanya contoh antarmuka, bukan profil resmi perguruan.</p></div>
+          <button class="text-link" data-nav="direktori">Lihat direktori →</button>
+        </div>
+        <div class="directory-grid" id="featuredGrid"></div>
+      </section>
+
+      <section class="section journey" aria-labelledby="journey-title">
+        <div>
+          <span class="eyebrow">Belajar melalui pengalaman</span>
+          <h2 id="journey-title">Bukan hanya tanding. Ada banyak hal untuk dijelajahi.</h2>
+          <p>Setiap misi dapat mengenalkan kisah, nilai, gerak, seni, dan pengetahuan yang disiapkan bersama komunitas pencak silat.</p>
+          <button class="btn btn-primary" data-nav="game">Lihat rancangan Game Center →</button>
+        </div>
+        <div class="journey-list">
+          <div class="journey-item"><span class="journey-num">1</span><div><strong>Temukan cerita</strong><span>Jelajahi tempat dan sumber sejarah.</span></div></div>
+          <div class="journey-item"><span class="journey-num">2</span><div><strong>Kenali gerak</strong><span>Pelajari istilah dan demonstrasi yang diizinkan.</span></div></div>
+          <div class="journey-item"><span class="journey-num">3</span><div><strong>Selesaikan tantangan</strong><span>Uji pengetahuan melalui misi dan kuis.</span></div></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="view" id="view-direktori">
+      <div class="page-header">
+        <span class="eyebrow">Kenali keragaman</span>
+        <h1>Direktori Perguruan</h1>
+        <p>Ruang untuk memperkenalkan organisasi, aliran, dan tradisi pencak silat melalui informasi yang memiliki sumber dan persetujuan yang sesuai.</p>
+      </div>
+      <div class="toolbar">
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="orgSearch" type="search" placeholder="Cari nama, wilayah, atau kata kunci…" aria-label="Cari perguruan"></label>
+        <select class="filter-select" id="regionFilter" aria-label="Filter wilayah"><option value="">Semua wilayah (demo)</option><option>Sumatra</option><option>Jawa</option><option>Kalimantan</option><option>Sulawesi</option><option>Bali dan Nusa Tenggara</option><option>Maluku dan Papua</option></select>
+      </div>
+      <div class="directory-grid" id="directoryGrid"></div>
+      <div class="notice">Catatan prototipe: kartu yang tampil di bawah adalah data contoh untuk menguji desain. Nama, profil, wilayah, dan deskripsi bukan data perguruan resmi. Ganti dengan informasi yang sudah diverifikasi sebelum publikasi.</div>
+    </section>
+
+    <section class="view" id="view-detail">
+      <button class="back-button" data-nav="direktori">← Kembali ke direktori</button>
+      <div id="detailContent"></div>
+    </section>
+
+    <section class="view" id="view-jelajah">
+      <div class="page-header"><span class="eyebrow">Peta dan kisah</span><h1>Jelajah Nusantara</h1><p>Rancangan ruang petualangan untuk menemukan hubungan antara pencak silat, daerah, tokoh, tradisi, dan cerita lokal.</p></div>
+      <div class="simple-panel">
+        <h2>Rencana fitur</h2>
+        <ul>
+          <li>Peta wilayah dengan titik cerita dan perguruan yang terverifikasi.</li>
+          <li>Halaman cerita yang memuat sumber, narasumber, dan tanggal dokumentasi.</li>
+          <li>Sistem misi: membaca cerita, menjawab kuis, lalu membuka koleksi pengetahuan.</li>
+          <li>Konten daerah ditambahkan bertahap bersama kontributor dan komunitas terkait.</li>
+        </ul>
+        <p><strong>Status:</strong> rancangan fitur; peta interaktif dan misi belum diimplementasikan.</p>
+      </div>
+    </section>
+
+    <section class="view" id="view-ensiklopedia">
+      <div class="page-header"><span class="eyebrow">Ruang pengetahuan</span><h1>Ensiklopedia Silat</h1><p>Dokumentasi jurus, istilah, tokoh, sejarah, filosofi, seni, dan budaya yang bersumber serta dikurasi.</p></div>
+      <div class="feature-grid">
+        <article class="feature-card"><div class="feature-icon">⌁</div><h3>Istilah dan konsep</h3><p>Penjelasan istilah sesuai konteks dan sumber yang dicantumkan.</p></article>
+        <article class="feature-card"><div class="feature-icon">✧</div><h3>Tokoh dan sejarah</h3><p>Biografi dan kronologi berdasarkan sumber tepercaya atau dokumentasi yang disetujui.</p></article>
+        <article class="feature-card"><div class="feature-icon">◉</div><h3>Jurus dan ragam gerak</h3><p>Dokumentasi gerak dengan atribusi, izin, dan batas akses yang jelas.</p></article>
+      </div>
+      <div class="notice">Materi ensiklopedia belum berisi fakta perguruan. Jangan menambahkan klaim sejarah atau teknik sebagai fakta sebelum diperiksa.</div>
+    </section>
+
+    <section class="view" id="view-game">
+      <div class="page-header"><span class="eyebrow">Belajar sambil bermain</span><h1>Game Center</h1><p>Permainan dikembangkan bertahap. Versi awal berfokus pada pengetahuan dan budaya sebelum menuju petualangan 2D.</p></div>
+      <div class="feature-grid">
+        <article class="feature-card"><div class="feature-icon">?</div><h3>Kuis Pencak Silat</h3><p>Latihan pengetahuan dasar. Modul kuis interaktif akan ditambahkan pada tahap berikutnya.</p><button class="btn btn-outline" data-action="coming-soon">Segera hadir</button></article>
+        <article class="feature-card"><div class="feature-icon">⌖</div><h3>Petualangan Nusantara</h3><p>Jelajahi wilayah, kumpulkan cerita, dan buka misi pengetahuan.</p><button class="btn btn-outline" data-action="coming-soon">Rencana pengembangan</button></article>
+        <article class="feature-card"><div class="feature-icon">✦</div><h3>Tantangan Gerak</h3><p>Tantangan edukatif berdasarkan materi demonstrasi yang diizinkan.</p><button class="btn btn-outline" data-action="coming-soon">Rencana pengembangan</button></article>
+      </div>
+    </section>
+
+    <section class="view" id="view-kontribusi">
+      <div class="page-header"><span class="eyebrow">Tumbuh bersama</span><h1>Kontribusi untuk Rumah Digital</h1><p>Platform ini dirancang agar perguruan dan komunitas dapat mengusulkan materi, bukan hanya menjadi penonton.</p></div>
+      <div class="contribute">
+        <div><h3>Ajukan profil atau materi</h3><p>Akun anggota sudah tersedia. Formulir kontribusi dan proses verifikasi akan dibuat setelah aturan data dan izin ditetapkan.</p></div>
+        <button class="btn btn-primary" data-action="coming-soon">Formulir segera hadir</button>
+      </div>
+      <div class="section">
+        <div class="simple-panel">
+          <h2>Prinsip kontribusi</h2>
+          <ul>
+            <li>Kontributor menjelaskan sumber dan kewenangan atas materi yang diajukan.</li>
+            <li>Pemilik materi menentukan izin publikasi dan batas akses.</li>
+            <li>Materi diperiksa sebelum ditampilkan sebagai informasi resmi.</li>
+            <li>Konten dapat dikoreksi jika ada kekeliruan atau keberatan yang sah.</li>
+            <li>Perbedaan tradisi dihormati; satu perguruan tidak dijadikan standar untuk semua.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- AKUN -->
+    <section class="view" id="view-akun">
+      <div class="page-header"><span class="eyebrow">Akun anggota</span><h1>Akun Saya</h1></div>
+      <div class="simple-panel" id="accountPanel">
+        <h2 id="accName">—</h2>
+        <div class="account-grid">
+          <div><small>Email</small><strong id="accEmail">—</strong></div>
+          <div><small>Status email</small><strong id="accVerified">—</strong></div>
+          <div><small>Peran</small><strong id="accRole">Anggota</strong></div>
+          <div><small>Bergabung</small><strong id="accJoined">—</strong></div>
+        </div>
+        <div class="form-ok" id="accMsg"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-outline" id="btnResendVerify" type="button">Kirim ulang email verifikasi</button>
+          <button class="btn btn-dark" id="btnLogout" type="button">Keluar</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div><strong>Rumah Digital Pencak Silat Indonesia</strong><br>Blueprint awal · Prototipe antarmuka</div>
+      <div>Versi 0.2 · Firebase Authentication + Firestore</div>
+    </div>
+  </footer>
+
+  <!-- MODAL LOGIN / DAFTAR -->
+  <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="modal">
+      <button class="modal-close" id="authClose" type="button" aria-label="Tutup">✕</button>
+      <span class="eyebrow">Rumah Digital</span>
+      <h2 id="authTitle">Masuk ke akun</h2>
+      <p class="sub" id="authSub">Selamat datang kembali.</p>
+
+      <div class="tabs" id="authTabs">
+        <button class="tab active" data-tab="login" type="button">Masuk</button>
+        <button class="tab" data-tab="register" type="button">Daftar</button>
+      </div>
+
+      <div class="form-error" id="authError" role="alert"></div>
+      <div class="form-ok" id="authOk" role="status"></div>
+
+      <!-- Login -->
+      <form id="formLogin" novalidate>
+        <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="email" placeholder="nama@email.com" required></div>
+        <div class="field">
+          <label for="loginPass">Kata sandi</label>
+          <div class="pw-wrap"><input id="loginPass" type="password" autocomplete="current-password" placeholder="Kata sandi Anda" required><button class="pw-toggle" type="button" data-pw="loginPass">Lihat</button></div>
+        </div>
+        <div class="row-between"><span></span><button class="link-btn" type="button" id="btnForgot">Lupa kata sandi?</button></div>
+        <button class="btn btn-dark btn-block" type="submit" id="btnLoginSubmit">Masuk</button>
+      </form>
+
+      <!-- Daftar -->
+      <form id="formRegister" class="hidden" novalidate>
+        <div class="field"><label for="regName">Nama lengkap</label><input id="regName" type="text" autocomplete="name" placeholder="Nama Anda" required></div>
+        <div class="field"><label for="regEmail">Email</label><input id="regEmail" type="email" autocomplete="email" placeholder="nama@email.com" required></div>
+        <div class="field">
+          <label for="regPass">Kata sandi (min. 8 karakter)</label>
+          <div class="pw-wrap"><input id="regPass" type="password" autocomplete="new-password" placeholder="Minimal 8 karakter" required><button class="pw-toggle" type="button" data-pw="regPass">Lihat</button></div>
+        </div>
+        <div class="field">
+          <label for="regPass2">Ulangi kata sandi</label>
+          <div class="pw-wrap"><input id="regPass2" type="password" autocomplete="new-password" placeholder="Ketik ulang kata sandi" required><button class="pw-toggle" type="button" data-pw="regPass2">Lihat</button></div>
+        </div>
+        <button class="btn btn-dark btn-block" type="submit" id="btnRegSubmit">Buat akun</button>
+        <p class="small-note">Kami akan mengirim email verifikasi ke alamat Anda.</p>
+      </form>
+
+      <!-- Lupa sandi -->
+      <form id="formForgot" class="hidden" novalidate>
+        <div class="field"><label for="forgotEmail">Email akun Anda</label><input id="forgotEmail" type="email" autocomplete="email" placeholder="nama@email.com" required></div>
+        <button class="btn btn-dark btn-block" type="submit" id="btnForgotSubmit">Kirim tautan reset</button>
+        <div class="row-between" style="margin:14px 0 0"><button class="link-btn" type="button" id="btnBackLogin">← Kembali ke Masuk</button></div>
+      </form>
+
+      <div id="googleBlock">
+        <div class="divider">atau</div>
+        <button class="btn btn-outline btn-block" type="button" id="btnGoogle">Lanjut dengan Google</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===== SKRIP UTAMA (navigasi & direktori) ===== -->
+  <script>
+    // DATA DEMO: ganti hanya dengan data yang telah diverifikasi dan memiliki izin penggunaan.
+    const demoOrganizations = [
+      { id: "demo-01", name: "Contoh Perguruan A", region: "Jawa", area: "Wilayah contoh · Jawa",
+        summary: "Kartu contoh untuk menunjukkan bagaimana profil perguruan akan ditampilkan.",
+        focus: ["Profil", "Sejarah", "Budaya"], symbol: "᯽", color: "",
+        history: "Belum diisi. Masukkan sejarah berdasarkan sumber yang dapat diperiksa dan/atau keterangan resmi perguruan.",
+        source: "Belum ada sumber — data demo.", status: "DEMO" },
+      { id: "demo-02", name: "Contoh Perguruan B", region: "Sumatra", area: "Wilayah contoh · Sumatra",
+        summary: "Contoh tampilan untuk perguruan dari wilayah berbeda, bukan organisasi nyata.",
+        focus: ["Ragam gerak", "Dokumentasi"], symbol: "✦", color: "gold",
+        history: "Belum diisi. Materi sejarah dan karakteristik gerak harus disetujui oleh pihak yang berwenang.",
+        source: "Belum ada sumber — data demo.", status: "DEMO" },
+      { id: "demo-03", name: "Contoh Perguruan C", region: "Kalimantan", area: "Wilayah contoh · Kalimantan",
+        summary: "Contoh kartu direktori untuk menguji pencarian, filter wilayah, dan halaman detail.",
+        focus: ["Seni", "Tradisi", "Komunitas"], symbol: "◇", color: "blue",
+        history: "Belum diisi. Tambahkan informasi hanya setelah verifikasi dan persetujuan publikasi.",
+        source: "Belum ada sumber — data demo.", status: "DEMO" }
+    ];
+
+    const viewNames = ["beranda", "jelajah", "direktori", "detail", "ensiklopedia", "game", "kontribusi", "akun"];
+    const navButtons = document.querySelectorAll("[data-nav]");
+    const views = document.querySelectorAll(".view");
+    const navLinks = document.getElementById("navLinks");
+    const navToggle = document.getElementById("navToggle");
+    const toast = document.getElementById("toast");
+    let toastTimer;
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    function navigate(name) {
+      if (!viewNames.includes(name)) name = "beranda";
+      views.forEach(view => view.classList.toggle("active", view.id === `view-${name}`));
+      document.querySelectorAll(".nav-link").forEach(button => {
+        button.classList.toggle("active", button.dataset.nav === name);
+      });
+      navLinks.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      if (location.hash !== `#${name}`) history.replaceState(null, "", `#${name}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[char]));
+    }
+
+    function orgCard(org) {
+      const tags = org.focus.map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join("");
+      return `
+        <article class="org-card">
+          <div class="org-cover ${escapeHTML(org.color)}">
+            <span class="org-symbol" aria-hidden="true">${escapeHTML(org.symbol)}</span>
+            <span class="demo-tag">${escapeHTML(org.status)}</span>
+          </div>
+          <div class="org-body">
+            <h3>${escapeHTML(org.name)}</h3>
+            <div class="org-meta">⌖ ${escapeHTML(org.area)}</div>
+            <p>${escapeHTML(org.summary)}</p>
+            <div class="tag-row">${tags}</div>
+            <div class="card-actions">
+              <button class="btn btn-outline" data-detail="${escapeHTML(org.id)}">Lihat detail</button>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    function renderOrganizations() {
+      const query = (document.getElementById("orgSearch")?.value || "").trim().toLowerCase();
+      const region = document.getElementById("regionFilter")?.value || "";
+      const filtered = demoOrganizations.filter(org => {
+        const searchable = `${org.name} ${org.region} ${org.area} ${org.summary} ${org.focus.join(" ")}`.toLowerCase();
+        return searchable.includes(query) && (!region || org.region === region);
+      });
+      const html = filtered.length
+        ? filtered.map(orgCard).join("")
+        : `<div class="empty-state"><strong>Belum ada hasil.</strong><br>Coba kata kunci atau filter wilayah yang berbeda.</div>`;
+      document.getElementById("directoryGrid").innerHTML = html;
+      document.getElementById("featuredGrid").innerHTML = demoOrganizations.slice(0, 3).map(orgCard).join("");
+    }
+
+    function showDetail(id) {
+      const org = demoOrganizations.find(item => item.id === id);
+      if (!org) { showToast("Data tidak ditemukan."); return; }
+      document.getElementById("detailContent").innerHTML = `
+        <div class="detail-panel">
+          <div class="detail-art" aria-hidden="true">${escapeHTML(org.symbol)}</div>
+          <div class="detail-content">
+            <span class="eyebrow">Profil perguruan · ${escapeHTML(org.status)}</span>
+            <h2>${escapeHTML(org.name)}</h2>
+            <p>${escapeHTML(org.summary)}</p>
+            <div class="detail-meta">
+              <div><small>Wilayah contoh</small><strong>${escapeHTML(org.region)}</strong></div>
+              <div><small>Status data</small><strong>Data demo</strong></div>
+              <div><small>Fokus tampilan</small><strong>${escapeHTML(org.focus.join(", "))}</strong></div>
+              <div><small>Sumber</small><strong>${escapeHTML(org.source)}</strong></div>
+            </div>
+            <h3>Sejarah dan keterangan</h3>
+            <p>${escapeHTML(org.history)}</p>
+            <div class="disclaimer">Profil ini hanya contoh antarmuka, bukan informasi resmi. Ganti dengan data yang telah diverifikasi dan memperoleh izin publikasi yang sesuai.</div>
+          </div>
+        </div>`;
+      navigate("detail");
+    }
+
+    navButtons.forEach(button => {
+      button.addEventListener("click", event => {
+        event.preventDefault();
+        const name = button.dataset.nav;
+        if (name) navigate(name);
+      });
+    });
+
+    document.addEventListener("click", event => {
+      const detailButton = event.target.closest("[data-detail]");
+      if (detailButton) showDetail(detailButton.dataset.detail);
+      const actionButton = event.target.closest("[data-action]");
+      if (actionButton?.dataset.action === "coming-soon") {
+        showToast("Fitur ini belum aktif. Akan dikembangkan pada tahap berikutnya.");
+      }
+    });
+
+    document.getElementById("orgSearch").addEventListener("input", renderOrganizations);
+    document.getElementById("regionFilter").addEventListener("change", renderOrganizations);
+    navToggle.addEventListener("click", () => {
+      const isOpen = navLinks.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    renderOrganizations();
+    const initialRoute = location.hash.replace("#", "");
+    if (viewNames.includes(initialRoute) && initialRoute !== "akun" && initialRoute !== "detail") navigate(initialRoute);
+  </script>
+
+  <!-- ===== SKRIP AUTH (Firebase) ===== -->
+  <script type="module">
+    import { firebaseConfig } from "./firebase-config.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+      signOut, sendEmailVerification, sendPasswordResetEmail, updateProfile,
+      GoogleAuthProvider, signInWithPopup
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, setDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const $ = id => document.getElementById(id);
+    const configured = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("ISI_");
+
+    const modal = $("authModal");
+    const errBox = $("authError");
+    const okBox = $("authOk");
+    let mode = "login";
+
+    function setMode(next) {
+      mode = next;
+      $("formLogin").classList.toggle("hidden", next !== "login");
+      $("formRegister").classList.toggle("hidden", next !== "register");
+      $("formForgot").classList.toggle("hidden", next !== "forgot");
+      $("authTabs").classList.toggle("hidden", next === "forgot");
+      $("googleBlock").classList.toggle("hidden", next === "forgot");
+      document.querySelectorAll("#authTabs .tab").forEach(t => t.classList.toggle("active", t.dataset.tab === next));
+      const titles = {
+        login: ["Masuk ke akun", "Selamat datang kembali."],
+        register: ["Buat akun baru", "Gabung dan jelajahi warisan pencak silat Nusantara."],
+        forgot: ["Reset kata sandi", "Kami kirim tautan reset ke email Anda."]
+      };
+      $("authTitle").textContent = titles[next][0];
+      $("authSub").textContent = titles[next][1];
+      clearMsg();
+    }
+    function clearMsg() { errBox.classList.remove("show"); okBox.classList.remove("show"); }
+    function showErr(m) { okBox.classList.remove("show"); errBox.textContent = m; errBox.classList.add("show"); }
+    function showOk(m) { errBox.classList.remove("show"); okBox.textContent = m; okBox.classList.add("show"); }
+    function openModal(next) { setMode(next); modal.classList.add("open"); setTimeout(() => modal.querySelector("input:not(.hidden)")?.focus(), 50); }
+    function closeModal() { modal.classList.remove("open"); }
+
+    $("btnOpenLogin").addEventListener("click", () => openModal("login"));
+    $("btnOpenRegister").addEventListener("click", () => openModal("register"));
+    $("heroRegister").addEventListener("click", () => openModal("register"));
+    $("authClose").addEventListener("click", closeModal);
+    modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+    document.querySelectorAll("#authTabs .tab").forEach(t => t.addEventListener("click", () => setMode(t.dataset.tab)));
+    $("btnForgot").addEventListener("click", () => { $("forgotEmail").value = $("loginEmail").value; setMode("forgot"); });
+    $("btnBackLogin").addEventListener("click", () => setMode("login"));
+    document.querySelectorAll(".pw-toggle").forEach(b => b.addEventListener("click", () => {
+      const input = $(b.dataset.pw);
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      b.textContent = show ? "Sembunyi" : "Lihat";
+    }));
+
+    function friendlyError(err) {
+      const map = {
+        "auth/email-already-in-use": "Email ini sudah terdaftar. Silakan masuk.",
+        "auth/invalid-email": "Format email tidak valid.",
+        "auth/weak-password": "Kata sandi terlalu lemah (minimal 8 karakter).",
+        "auth/user-not-found": "Email atau kata sandi salah.",
+        "auth/wrong-password": "Email atau kata sandi salah.",
+        "auth/invalid-credential": "Email atau kata sandi salah.",
+        "auth/too-many-requests": "Terlalu banyak percobaan. Coba lagi beberapa menit lagi.",
+        "auth/network-request-failed": "Koneksi internet bermasalah. Coba lagi.",
+        "auth/popup-closed-by-user": "Jendela Google ditutup sebelum selesai.",
+        "auth/cancelled-popup-request": "Permintaan masuk dibatalkan.",
+        "auth/unauthorized-domain": "Domain ini belum diizinkan di Firebase (Authentication → Settings → Authorized domains).",
+        "auth/operation-not-allowed": "Metode login ini belum diaktifkan di Firebase Console.",
+        "auth/user-disabled": "Akun ini dinonaktifkan."
+      };
+      return map[err?.code] || "Terjadi kesalahan. Coba lagi. (" + (err?.code || err?.message || "tidak diketahui") + ")";
+    }
+
+    function busy(btn, on, label) { btn.disabled = on; if (label) btn.textContent = label; }
+
+    if (!configured) {
+      // Mode belum dikonfigurasi: tampilkan pesan jelas, jangan crash.
+      const warn = () => { openModal("login"); showErr("Firebase belum dikonfigurasi. Isi file firebase-config.js dengan konfigurasi proyek Anda."); };
+      $("formLogin").addEventListener("submit", e => { e.preventDefault(); warn(); });
+      $("formRegister").addEventListener("submit", e => { e.preventDefault(); warn(); });
+      $("formForgot").addEventListener("submit", e => { e.preventDefault(); warn(); });
+      $("btnGoogle").addEventListener("click", warn);
+      $("btnLogout").addEventListener("click", () => {});
+      console.warn("firebase-config.js belum diisi.");
+    } else {
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      auth.languageCode = "id";
+      const db = getFirestore(app);
+
+      async function ensureProfile(user, nameHint) {
+        // Buat dokumen profil bila belum ada (mis. login Google pertama kali).
+        try {
+          const ref = doc(db, "users", user.uid);
+          const snap = await getDoc(ref);
+          if (!snap.exists()) {
+            await setDoc(ref, {
+              name: nameHint || user.displayName || "",
+              email: user.email || "",
+              role: "member",
+              createdAt: serverTimestamp()
+            });
+          }
+          return (await getDoc(ref)).data();
+        } catch (e) {
+          console.warn("Profil Firestore tidak dapat diakses:", e);
+          return null;
+        }
+      }
+
+      $("formRegister").addEventListener("submit", async e => {
+        e.preventDefault(); clearMsg();
+        const name = $("regName").value.trim();
+        const email = $("regEmail").value.trim();
+        const p1 = $("regPass").value, p2 = $("regPass2").value;
+        if (name.length < 2) return showErr("Isi nama lengkap Anda.");
+        if (!email) return showErr("Isi alamat email.");
+        if (p1.length < 8) return showErr("Kata sandi minimal 8 karakter.");
+        if (p1 !== p2) return showErr("Kata sandi dan ulangannya tidak sama.");
+        const btn = $("btnRegSubmit"); busy(btn, true, "Membuat akun…");
+        try {
+          const cred = await createUserWithEmailAndPassword(auth, email, p1);
+          await updateProfile(cred.user, { displayName: name });
+          await ensureProfile(cred.user, name);
+          try { await sendEmailVerification(cred.user); } catch (_) {}
+          closeModal();
+          showToast("Akun dibuat. Cek email Anda untuk verifikasi.");
+          $("formRegister").reset();
+        } catch (err) { showErr(friendlyError(err)); }
+        finally { busy(btn, false, "Buat akun"); }
+      });
+
+      $("formLogin").addEventListener("submit", async e => {
+        e.preventDefault(); clearMsg();
+        const email = $("loginEmail").value.trim(), pass = $("loginPass").value;
+        if (!email || !pass) return showErr("Isi email dan kata sandi.");
+        const btn = $("btnLoginSubmit"); busy(btn, true, "Masuk…");
+        try {
+          await signInWithEmailAndPassword(auth, email, pass);
+          closeModal(); $("formLogin").reset();
+          showToast("Berhasil masuk. Selamat datang!");
+        } catch (err) { showErr(friendlyError(err)); }
+        finally { busy(btn, false, "Masuk"); }
+      });
+
+      $("formForgot").addEventListener("submit", async e => {
+        e.preventDefault(); clearMsg();
+        const email = $("forgotEmail").value.trim();
+        if (!email) return showErr("Isi alamat email.");
+        const btn = $("btnForgotSubmit"); busy(btn, true, "Mengirim…");
+        try {
+          await sendPasswordResetEmail(auth, email);
+          showOk("Jika email terdaftar, tautan reset sudah dikirim. Cek kotak masuk/spam.");
+        } catch (err) {
+          // Jangan bocorkan apakah email terdaftar.
+          if (err.code === "auth/invalid-email") showErr(friendlyError(err));
+          else showOk("Jika email terdaftar, tautan reset sudah dikirim. Cek kotak masuk/spam.");
+        } finally { busy(btn, false, "Kirim tautan reset"); }
+      });
+
+      $("btnGoogle").addEventListener("click", async () => {
+        clearMsg();
+        try {
+          const result = await signInWithPopup(auth, new GoogleAuthProvider());
+          await ensureProfile(result.user, result.user.displayName);
+          closeModal();
+          showToast("Berhasil masuk dengan Google.");
+        } catch (err) { showErr(friendlyError(err)); }
+      });
+
+      $("btnLogout").addEventListener("click", async () => {
+        await signOut(auth);
+        showToast("Anda telah keluar.");
+        navigate("beranda");
+      });
+
+      $("btnResendVerify").addEventListener("click", async () => {
+        const user = auth.currentUser;
+        if (!user) return;
+        try {
+          await sendEmailVerification(user);
+          $("accMsg").textContent = "Email verifikasi dikirim ulang. Cek kotak masuk/spam.";
+          $("accMsg").classList.add("show");
+        } catch (err) {
+          $("accMsg").textContent = friendlyError(err);
+          $("accMsg").classList.add("show");
+        }
+      });
+
+      function fmtDate(ts) {
+        try { return ts?.toDate ? ts.toDate().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : "—"; }
+        catch { return "—"; }
+      }
+
+      onAuthStateChanged(auth, async user => {
+        const box = $("navAuth");
+        if (user) {
+          const name = user.displayName || (user.email || "Anggota").split("@")[0];
+          const initial = name.trim().charAt(0).toUpperCase();
+          box.innerHTML = `<button class="user-chip" id="chipAccount" type="button"><span class="avatar"></span><span class="chip-name"></span></button>`;
+          box.querySelector(".avatar").textContent = initial;
+          box.querySelector(".chip-name").textContent = name.split(" ")[0];
+          $("chipAccount").addEventListener("click", () => navigate("akun"));
+
+          $("accName").textContent = name;
+          $("accEmail").textContent = user.email || "—";
+          $("accVerified").innerHTML = user.emailVerified
+            ? '<span class="badge ok">Terverifikasi</span>'
+            : '<span class="badge warn">Belum diverifikasi</span>';
+          $("btnResendVerify").classList.toggle("hidden", user.emailVerified);
+          $("accMsg").classList.remove("show");
+          $("accJoined").textContent = user.metadata?.creationTime
+            ? new Date(user.metadata.creationTime).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : "—";
+
+          const profile = await ensureProfile(user, name);
+          if (profile) {
+            $("accRole").textContent = profile.role === "admin" ? "Admin" : "Anggota";
+            if (profile.createdAt) $("accJoined").textContent = fmtDate(profile.createdAt);
+          }
+        } else {
+          $("navAuth").innerHTML = `<button class="btn btn-outline" id="btnOpenLogin2" type="button">Masuk</button><button class="btn btn-dark" id="btnOpenRegister2" type="button">Daftar</button>`;
+          $("btnOpenLogin2").addEventListener("click", () => openModal("login"));
+          $("btnOpenRegister2").addEventListener("click", () => openModal("register"));
+          if (document.getElementById("view-akun").classList.contains("active")) navigate("beranda");
+        }
+      });
+    }
+  </script>
+</body>
+</html>
