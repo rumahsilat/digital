@@ -15,10 +15,11 @@
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--paper); line-height: 1.55; }
-    button, input, select { font: inherit; }
+    button, input, select, textarea { font: inherit; }
     button, a { -webkit-tap-highlight-color: transparent; }
     a { color: inherit; text-decoration: none; }
     button { cursor: pointer; }
+    .muted { color: var(--muted); }
     .topbar { background: var(--green-950); color: #fff; font-size: .82rem; }
     .topbar-inner { max-width: 1180px; margin: auto; padding: 9px 22px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
     .site-header { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px); }
@@ -52,7 +53,9 @@
     .btn-dark:hover { background: var(--green-800); }
     .btn-light { color: #fff; background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.28); }
     .btn-outline { background: #fff; border-color: var(--line); color: var(--green-900); }
+    .btn-danger { background: #fff; border-color: #f0c9c5; color: var(--danger); }
     .btn-block { width: 100%; }
+    .mini { padding: 6px 10px; font-size: .8rem; border-radius: 9px; }
     .hero-emblem { position: relative; z-index: 1; display: grid; place-items: center; min-height: 250px; }
     .emblem-ring { width: min(270px, 100%); aspect-ratio: 1; border: 1px solid rgba(217,173,91,.6); border-radius: 50%; display: grid; place-items: center; position: relative; background: radial-gradient(circle, rgba(255,255,255,.08), transparent 68%); }
     .emblem-ring:before, .emblem-ring:after { content: ""; position: absolute; inset: 15px; border: 1px dashed rgba(255,255,255,.25); border-radius: 50%; }
@@ -80,18 +83,19 @@
     .filter-select { border: 1px solid var(--line); border-radius: 12px; padding: 0 12px; min-height: 45px; color: var(--ink); background: #fff; }
     .directory-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 15px; }
     .org-card { border: 1px solid var(--line); background: #fff; border-radius: var(--radius); overflow: hidden; transition: transform .15s, box-shadow .15s; }
+    .org-card.clickable { cursor: pointer; }
     .org-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-    .org-cover { min-height: 112px; padding: 18px; color: #fff; display: flex; justify-content: space-between; align-items: start; background: linear-gradient(135deg, #1a493b, #39745c); }
-    .org-cover.gold { background: linear-gradient(135deg, #6d4c20, #b28a45); }
-    .org-cover.blue { background: linear-gradient(135deg, #243e52, #4f7181); }
-    .org-symbol { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid rgba(255,255,255,.45); border-radius: 15px; font-size: 1.45rem; }
-    .demo-tag { font-size: .68rem; font-weight: 800; letter-spacing: .07em; border-radius: 999px; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.3); padding: 5px 8px; }
+    .org-cover { position: relative; overflow: hidden; min-height: 120px; padding: 18px; color: #fff; display: flex; justify-content: space-between; align-items: start; background: linear-gradient(135deg, #1a493b, #39745c); }
+    .org-cover.has-img { min-height: 160px; }
+    .org-cover.has-img:before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(rgba(16,42,36,.1), rgba(16,42,36,.5)); }
+    .cover-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .org-symbol, .demo-tag { position: relative; z-index: 2; }
+    .org-symbol { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid rgba(255,255,255,.45); border-radius: 15px; font-size: 1.45rem; background: rgba(16,42,36,.25); }
+    .demo-tag { font-size: .68rem; font-weight: 800; letter-spacing: .07em; border-radius: 999px; background: rgba(16,42,36,.45); border: 1px solid rgba(255,255,255,.3); padding: 5px 8px; }
     .org-body { padding: 18px; }
     .org-body h3 { margin: 0 0 4px; font-size: 1.06rem; }
     .org-meta { color: var(--muted); font-size: .82rem; margin-bottom: 11px; }
     .org-body p { color: #56645d; font-size: .9rem; margin: 0 0 15px; }
-    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
-    .tag { font-size: .73rem; background: #f0f4f0; color: #3d594c; padding: 5px 8px; border-radius: 7px; }
     .card-actions { display: flex; gap: 8px; }
     .card-actions .btn { padding: 8px 11px; font-size: .84rem; flex: 1; }
     .empty-state { grid-column: 1/-1; background: #fff; border: 1px dashed #c8d4cc; padding: 30px; border-radius: 16px; text-align: center; color: var(--muted); }
@@ -115,26 +119,32 @@
     .page-header { padding: 25px 0 10px; }
     .page-header h1 { font-size: clamp(2rem,4vw,3.2rem); color: var(--green-950); margin: 10px 0; }
     .page-header p { color: var(--muted); max-width: 720px; }
+    .page-actions { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
     .back-button { border: 0; background: transparent; color: var(--green-800); font-weight: 750; padding: 8px 0; }
     .detail-panel { display: grid; grid-template-columns: .8fr 1.2fr; gap: 24px; background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 24px; margin-top: 15px; }
-    .detail-art { min-height: 240px; display: grid; place-items: center; border-radius: 17px; background: linear-gradient(135deg, #173c32, #39745c); color: var(--gold); font-size: 6rem; }
-    .detail-content h2 { margin: 0 0 6px; }
+    .detail-panel.single { grid-template-columns: 1fr; }
+    .detail-content h2 { margin: 6px 0; font-size: clamp(1.6rem,3vw,2.3rem); letter-spacing: -.03em; }
     .detail-content p { color: var(--muted); }
-    .detail-meta { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin: 18px 0; }
-    .detail-meta div { background: var(--paper); border-radius: 11px; padding: 12px; }
-    .detail-meta small { display: block; color: var(--muted); }
-    .detail-meta strong { font-size: .92rem; }
+    .entry-meta { color: var(--muted); font-size: .88rem; margin-bottom: 8px; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin: 14px 0; }
+    .gallery img { width: 100%; border-radius: 13px; display: block; }
+    .prose p { margin: 0 0 13px; color: #33433c; }
+    .video-embed { position: relative; aspect-ratio: 16/9; border-radius: 14px; overflow: hidden; background: #000; margin: 14px 0; }
+    .video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .video-native { width: 100%; border-radius: 14px; margin: 14px 0; background: #000; }
     .disclaimer { margin-top: 15px; padding: 12px 14px; background: #fff8e9; border-radius: 12px; font-size: .85rem; color: #624d25; }
+    .admin-note { background: #fdecea; color: var(--danger); padding: 9px 12px; border-radius: 10px; font-size: .86rem; margin-top: 8px; }
     .simple-panel { border: 1px solid var(--line); background: #fff; border-radius: 18px; padding: 24px; }
     .simple-panel h2 { margin-top: 0; }
     .simple-panel li { margin: 8px 0; }
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: var(--green-950); color: #fff; padding: 12px 17px; border-radius: 12px; box-shadow: var(--shadow); z-index: 100; transition: .2s; max-width: calc(100% - 30px); }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-    /* ===== AUTH ===== */
+    /* ===== MODAL & FORM ===== */
     .modal-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(16,42,36,.55); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 16px; }
     .modal-backdrop.open { display: flex; }
     .modal { width: 100%; max-width: 430px; max-height: 94vh; overflow-y: auto; background: #fff; border-radius: 22px; padding: 26px; box-shadow: 0 24px 60px rgba(0,0,0,.25); position: relative; }
+    .modal.wide { max-width: 660px; }
     .modal-close { position: absolute; top: 14px; right: 14px; border: 0; background: var(--green-100); width: 34px; height: 34px; border-radius: 50%; font-size: 1.1rem; color: var(--green-900); }
     .modal h2 { margin: 6px 0 4px; letter-spacing: -.03em; }
     .modal .sub { color: var(--muted); font-size: .9rem; margin: 0 0 16px; }
@@ -142,9 +152,15 @@
     .tab { border: 0; background: transparent; border-radius: 9px; padding: 9px; font-weight: 750; color: #43534c; }
     .tab.active { background: #fff; color: var(--green-900); box-shadow: 0 2px 8px rgba(16,42,36,.1); }
     .field { margin-bottom: 13px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .field label { display: block; font-size: .83rem; font-weight: 700; margin-bottom: 5px; color: #34463f; }
-    .field input { width: 100%; padding: 11px 13px; border: 1px solid #cfd9d3; border-radius: 11px; outline: 0; background: #fff; color: var(--ink); }
-    .field input:focus { border-color: var(--green-800); box-shadow: 0 0 0 3px rgba(33,84,69,.15); }
+    .field input[type=text], .field input[type=email], .field input[type=password], .field input[type=url], .field input[type=number], .field input[type=date], .field input:not([type]), .field select, .field textarea { width: 100%; padding: 11px 13px; border: 1px solid #cfd9d3; border-radius: 11px; outline: 0; background: #fff; color: var(--ink); }
+    .field textarea { resize: vertical; line-height: 1.5; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--green-800); box-shadow: 0 0 0 3px rgba(33,84,69,.15); }
+    .field .hint { font-size: .76rem; color: var(--muted); margin-top: 4px; }
+    .check { display: flex; gap: 8px; align-items: center; font-size: .9rem; font-weight: 600; }
+    .check input { width: 17px; height: 17px; accent-color: var(--green-800); }
+    .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
     .pw-wrap { position: relative; }
     .pw-wrap input { padding-right: 62px; }
     .pw-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--green-800); font-weight: 700; font-size: .78rem; padding: 6px 8px; }
@@ -155,15 +171,36 @@
     .divider { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: .8rem; margin: 16px 0; }
     .divider:before, .divider:after { content: ""; flex: 1; height: 1px; background: var(--line); }
     .link-btn { border: 0; background: transparent; color: var(--green-800); font-weight: 700; font-size: .86rem; padding: 0; }
-    .row-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .row-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; flex-wrap: wrap; }
     .small-note { font-size: .78rem; color: var(--muted); margin-top: 12px; text-align: center; }
-    .badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: .74rem; font-weight: 800; }
-    .badge.ok { background: #e7f4ec; color: #1c5b38; }
-    .badge.warn { background: #fff3d6; color: #7a5a14; }
+    .badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: .74rem; font-weight: 800; white-space: nowrap; }
+    .badge.ok, .badge.published { background: #e7f4ec; color: #1c5b38; }
+    .badge.warn, .badge.pending { background: #fff3d6; color: #7a5a14; }
+    .badge.draft, .badge.demo { background: #eceff0; color: #4a5558; }
+    .badge.rejected { background: #fdecea; color: var(--danger); }
     .account-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin: 16px 0; }
     .account-grid div { background: var(--paper); border-radius: 11px; padding: 12px; }
     .account-grid small { display: block; color: var(--muted); }
     .hidden { display: none !important; }
+
+    /* ===== EDITOR & ADMIN ===== */
+    .photo-thumbs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .thumb { position: relative; width: 88px; height: 88px; border-radius: 11px; overflow: hidden; border: 1px solid var(--line); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .thumb button { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgba(16,42,36,.8); color: #fff; font-size: .75rem; line-height: 1; }
+    .ed-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+    .atabs { display: flex; gap: 4px; flex-wrap: wrap; margin: 12px 0 18px; border-bottom: 1px solid var(--line); }
+    .atab { border: 0; background: transparent; padding: 10px 14px; font-weight: 750; color: #43534c; border-bottom: 3px solid transparent; }
+    .atab.active { color: var(--green-900); border-color: var(--gold); }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: .83rem; color: #43534c; }
+    .chip.active { background: var(--green-900); color: #fff; border-color: var(--green-900); }
+    .row-card { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; }
+    .row-main { flex: 1; min-width: 220px; }
+    .row-sub { color: var(--muted); font-size: .82rem; }
+    .row-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .row-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .panel-gap { margin-top: 16px; }
 
     @media (max-width: 900px) {
       .nav-wrap { flex-wrap: wrap; }
@@ -193,17 +230,19 @@
       .section-heading { align-items: start; flex-direction: column; }
       .contribute { grid-template-columns: 1fr; }
       .detail-panel { grid-template-columns: 1fr; padding: 15px; }
-      .detail-art { min-height: 160px; }
-      .detail-meta, .account-grid { grid-template-columns: 1fr 1fr; }
+      .account-grid { grid-template-columns: 1fr 1fr; }
       .modal { padding: 22px 18px; }
+      .field-row { grid-template-columns: 1fr; }
+      .row-side { align-items: flex-start; }
+      .row-actions { justify-content: flex-start; }
     }
   </style>
 </head>
 <body>
   <div class="topbar">
     <div class="topbar-inner">
-      <span>Ruang bersama untuk warisan pencak silat Nusantara</span>
-      <span>PROTOTIPE · DATA CONTOH</span>
+      <span id="announce">Ruang bersama untuk warisan pencak silat Nusantara</span>
+      <span>RUMAH DIGITAL PENCAK SILAT INDONESIA</span>
     </div>
   </div>
   <header class="site-header">
@@ -215,30 +254,34 @@
       <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">☰ Menu</button>
       <nav class="nav-links" id="navLinks" aria-label="Navigasi utama">
         <button class="nav-link active" data-nav="beranda">Beranda</button>
-        <button class="nav-link" data-nav="jelajah">Jelajah Nusantara</button>
-        <button class="nav-link" data-nav="direktori">Direktori Perguruan</button>
-        <button class="nav-link" data-nav="ensiklopedia">Ensiklopedia</button>
-        <button class="nav-link" data-nav="game">Game Center</button>
-        <button class="nav-link" data-nav="kontribusi">Kontribusi</button>
+        <button class="nav-link" data-nav="jelajah" data-builtin="jelajah">Jelajah Nusantara</button>
+        <button class="nav-link" data-nav="direktori" data-builtin="direktori">Direktori Perguruan</button>
+        <button class="nav-link" data-nav="ensiklopedia" data-builtin="ensiklopedia">Ensiklopedia</button>
+        <button class="nav-link" data-nav="game" data-builtin="game">Game Center</button>
+        <button class="nav-link" data-nav="kontribusi" data-builtin="kontribusi">Kontribusi</button>
+        <span id="customNav" style="display:contents"></span>
+        <button class="nav-link hidden" id="navSaya" data-nav="saya">Kontribusi Saya</button>
+        <button class="nav-link hidden" id="navAdmin" data-nav="admin">⚙ Admin</button>
         <div class="nav-auth" id="navAuth">
-          <button class="btn btn-outline" id="btnOpenLogin" type="button">Masuk</button>
-          <button class="btn btn-dark" id="btnOpenRegister" type="button">Daftar</button>
+          <button class="btn btn-outline" data-open-auth="login" type="button">Masuk</button>
+          <button class="btn btn-dark" data-open-auth="register" type="button">Daftar</button>
         </div>
       </nav>
     </div>
   </header>
 
   <main>
+    <!-- BERANDA -->
     <section class="view active" id="view-beranda" aria-labelledby="hero-title">
       <div class="hero">
         <div>
           <span class="eyebrow">Satu rumah, banyak tradisi</span>
           <h1 id="hero-title">Jelajahi kekayaan pencak silat Indonesia.</h1>
-          <p>Kenali perguruan, pelajari ragam gerak, temukan cerita budaya, dan ikuti petualangan yang merayakan keberagaman pencak silat Nusantara.</p>
+          <p id="heroText">Kenali perguruan, pelajari ragam gerak, temukan cerita budaya, dan ikuti petualangan yang merayakan keberagaman pencak silat Nusantara.</p>
           <div class="hero-actions">
             <button class="btn btn-primary" data-nav="direktori">Jelajahi Perguruan <span aria-hidden="true">→</span></button>
             <button class="btn btn-light" data-nav="game">Masuk ke Game Center</button>
-            <button class="btn btn-light" id="heroRegister" type="button">Gabung Sekarang</button>
+            <button class="btn btn-light" id="heroRegister" data-open-auth="register" type="button">Gabung Sekarang</button>
           </div>
         </div>
         <div class="hero-emblem" aria-hidden="true">
@@ -249,13 +292,15 @@
         </div>
       </div>
 
-      <div class="stats" aria-label="Ringkasan platform">
+      <div id="homeVideo" class="hidden"></div>
+
+      <div class="stats" id="secStats" aria-label="Ringkasan platform">
         <div class="stat"><strong>Beragam tradisi</strong><span>Ruang untuk banyak perguruan</span></div>
         <div class="stat"><strong>Belajar & bermain</strong><span>Pengetahuan di luar pertandingan</span></div>
         <div class="stat"><strong>Kontribusi bersama</strong><span>Konten melalui proses verifikasi</span></div>
       </div>
 
-      <section class="section" aria-labelledby="fitur-title">
+      <section class="section" id="secFeatures" aria-labelledby="fitur-title">
         <div class="section-heading">
           <div><h2 id="fitur-title">Satu platform, banyak cara menjelajah</h2><p>Dirancang sebagai rumah digital pencak silat: dari dokumentasi hingga pengalaman bermain.</p></div>
         </div>
@@ -269,15 +314,15 @@
         </div>
       </section>
 
-      <section class="section" aria-labelledby="pilihan-title">
+      <section class="section" id="secFeatured" aria-labelledby="pilihan-title">
         <div class="section-heading">
-          <div><h2 id="pilihan-title">Mulai dari direktori perguruan</h2><p>Data berikut hanya contoh antarmuka, bukan profil resmi perguruan.</p></div>
+          <div><h2 id="pilihan-title">Mulai dari direktori perguruan</h2><p>Profil terbaru yang sudah ditinjau dan diterbitkan admin.</p></div>
           <button class="text-link" data-nav="direktori">Lihat direktori →</button>
         </div>
         <div class="directory-grid" id="featuredGrid"></div>
       </section>
 
-      <section class="section journey" aria-labelledby="journey-title">
+      <section class="section journey" id="secJourney" aria-labelledby="journey-title">
         <div>
           <span class="eyebrow">Belajar melalui pengalaman</span>
           <h2 id="journey-title">Bukan hanya tanding. Ada banyak hal untuk dijelajahi.</h2>
@@ -292,25 +337,29 @@
       </section>
     </section>
 
+    <!-- DIREKTORI -->
     <section class="view" id="view-direktori">
       <div class="page-header">
         <span class="eyebrow">Kenali keragaman</span>
         <h1>Direktori Perguruan</h1>
         <p>Ruang untuk memperkenalkan organisasi, aliran, dan tradisi pencak silat melalui informasi yang memiliki sumber dan persetujuan yang sesuai.</p>
+        <div class="page-actions"><button class="btn btn-dark" type="button" data-contrib="direktori">＋ Tambah perguruan</button></div>
       </div>
       <div class="toolbar">
         <label class="search-box"><span aria-hidden="true">⌕</span><input id="orgSearch" type="search" placeholder="Cari nama, wilayah, atau kata kunci…" aria-label="Cari perguruan"></label>
-        <select class="filter-select" id="regionFilter" aria-label="Filter wilayah"><option value="">Semua wilayah (demo)</option><option>Sumatra</option><option>Jawa</option><option>Kalimantan</option><option>Sulawesi</option><option>Bali dan Nusa Tenggara</option><option>Maluku dan Papua</option></select>
+        <select class="filter-select" id="regionFilter" aria-label="Filter wilayah"><option value="">Semua wilayah</option><option>Sumatra</option><option>Jawa</option><option>Kalimantan</option><option>Sulawesi</option><option>Bali dan Nusa Tenggara</option><option>Maluku dan Papua</option><option>Luar Negeri</option></select>
       </div>
       <div class="directory-grid" id="directoryGrid"></div>
-      <div class="notice">Catatan prototipe: kartu yang tampil di bawah adalah data contoh untuk menguji desain. Nama, profil, wilayah, dan deskripsi bukan data perguruan resmi. Ganti dengan informasi yang sudah diverifikasi sebelum publikasi.</div>
+      <div class="notice hidden" id="demoNotice">Belum ada profil yang diterbitkan. Kartu di atas hanya data contoh untuk menguji tampilan, bukan data perguruan resmi. Profil asli muncul di sini setelah ditambahkan anggota dan diterbitkan admin.</div>
     </section>
 
+    <!-- DETAIL ENTRI -->
     <section class="view" id="view-detail">
-      <button class="back-button" data-nav="direktori">← Kembali ke direktori</button>
+      <button class="back-button" id="detailBack" data-nav="beranda" type="button">← Kembali</button>
       <div id="detailContent"></div>
     </section>
 
+    <!-- JELAJAH -->
     <section class="view" id="view-jelajah">
       <div class="page-header"><span class="eyebrow">Peta dan kisah</span><h1>Jelajah Nusantara</h1><p>Rancangan ruang petualangan untuk menemukan hubungan antara pencak silat, daerah, tokoh, tradisi, dan cerita lokal.</p></div>
       <div class="simple-panel">
@@ -325,16 +374,42 @@
       </div>
     </section>
 
+    <!-- ENSIKLOPEDIA -->
     <section class="view" id="view-ensiklopedia">
-      <div class="page-header"><span class="eyebrow">Ruang pengetahuan</span><h1>Ensiklopedia Silat</h1><p>Dokumentasi jurus, istilah, tokoh, sejarah, filosofi, seni, dan budaya yang bersumber serta dikurasi.</p></div>
-      <div class="feature-grid">
-        <article class="feature-card"><div class="feature-icon">⌁</div><h3>Istilah dan konsep</h3><p>Penjelasan istilah sesuai konteks dan sumber yang dicantumkan.</p></article>
-        <article class="feature-card"><div class="feature-icon">✧</div><h3>Tokoh dan sejarah</h3><p>Biografi dan kronologi berdasarkan sumber tepercaya atau dokumentasi yang disetujui.</p></article>
-        <article class="feature-card"><div class="feature-icon">◉</div><h3>Jurus dan ragam gerak</h3><p>Dokumentasi gerak dengan atribusi, izin, dan batas akses yang jelas.</p></article>
+      <div class="page-header">
+        <span class="eyebrow">Ruang pengetahuan</span>
+        <h1>Ensiklopedia Silat</h1>
+        <p>Dokumentasi jurus, istilah, tokoh, sejarah, filosofi, seni, dan budaya yang bersumber serta dikurasi.</p>
+        <div class="page-actions"><button class="btn btn-dark" type="button" data-contrib="ensiklopedia">＋ Tambah tulisan</button></div>
       </div>
-      <div class="notice">Materi ensiklopedia belum berisi fakta perguruan. Jangan menambahkan klaim sejarah atau teknik sebagai fakta sebelum diperiksa.</div>
+      <div class="toolbar">
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="encSearch" type="search" placeholder="Cari istilah, tokoh, atau topik…" aria-label="Cari ensiklopedia"></label>
+      </div>
+      <div class="directory-grid" id="encGrid"></div>
+      <div class="notice">Tulisan di ensiklopedia berasal dari anggota dan baru tampil setelah ditinjau admin. Cantumkan sumber pada setiap klaim sejarah atau teknik.</div>
     </section>
 
+    <!-- MENU TAMBAHAN (dinamis) -->
+    <section class="view" id="view-dyn">
+      <div class="page-header">
+        <span class="eyebrow" id="dynEyebrow">Menu</span>
+        <h1 id="dynTitle">—</h1>
+        <p id="dynDesc"></p>
+        <div class="page-actions">
+          <button class="btn btn-dark hidden" type="button" id="dynAdd" data-contrib="">＋ Tambah</button>
+          <button class="btn btn-outline hidden" type="button" id="dynEditPage">Edit halaman</button>
+        </div>
+      </div>
+      <div class="simple-panel prose hidden" id="dynPage"></div>
+      <div id="dynListWrap">
+        <div class="toolbar">
+          <label class="search-box"><span aria-hidden="true">⌕</span><input id="dynSearch" type="search" placeholder="Cari…" aria-label="Cari di menu ini"></label>
+        </div>
+        <div class="directory-grid" id="dynGrid"></div>
+      </div>
+    </section>
+
+    <!-- GAME -->
     <section class="view" id="view-game">
       <div class="page-header"><span class="eyebrow">Belajar sambil bermain</span><h1>Game Center</h1><p>Permainan dikembangkan bertahap. Versi awal berfokus pada pengetahuan dan budaya sebelum menuju petualangan 2D.</p></div>
       <div class="feature-grid">
@@ -344,22 +419,99 @@
       </div>
     </section>
 
+    <!-- KONTRIBUSI -->
     <section class="view" id="view-kontribusi">
-      <div class="page-header"><span class="eyebrow">Tumbuh bersama</span><h1>Kontribusi untuk Rumah Digital</h1><p>Platform ini dirancang agar perguruan dan komunitas dapat mengusulkan materi, bukan hanya menjadi penonton.</p></div>
+      <div class="page-header"><span class="eyebrow">Tumbuh bersama</span><h1>Kontribusi untuk Rumah Digital</h1><p>Anggota dapat menambahkan profil perguruan, tulisan ensiklopedia, foto, dan kegiatan. Admin meninjau sebelum diterbitkan.</p></div>
       <div class="contribute">
-        <div><h3>Ajukan profil atau materi</h3><p>Akun anggota sudah tersedia. Formulir kontribusi dan proses verifikasi akan dibuat setelah aturan data dan izin ditetapkan.</p></div>
-        <button class="btn btn-primary" data-action="coming-soon">Formulir segera hadir</button>
+        <div><h3>Ajukan profil atau materi</h3><p>Daftar atau masuk, lalu pilih menu tujuan, isi tulisan, tambahkan foto atau video, dan kirim untuk ditinjau.</p></div>
+        <button class="btn btn-primary" type="button" data-contrib="">＋ Tambah kontribusi</button>
       </div>
       <div class="section">
         <div class="simple-panel">
-          <h2>Prinsip kontribusi</h2>
+          <h2>Alur penerbitan</h2>
+          <ul>
+            <li><strong>Draf</strong> — hanya Anda yang melihat. Simpan dan lanjutkan kapan saja.</li>
+            <li><strong>Menunggu tinjauan</strong> — sudah dikirim ke admin.</li>
+            <li><strong>Terbit</strong> — disetujui admin dan tampil untuk semua pengunjung.</li>
+            <li><strong>Ditolak</strong> — admin memberi catatan; perbaiki lalu kirim ulang.</li>
+          </ul>
+          <h2 class="panel-gap">Prinsip kontribusi</h2>
           <ul>
             <li>Kontributor menjelaskan sumber dan kewenangan atas materi yang diajukan.</li>
             <li>Pemilik materi menentukan izin publikasi dan batas akses.</li>
-            <li>Materi diperiksa sebelum ditampilkan sebagai informasi resmi.</li>
             <li>Konten dapat dikoreksi jika ada kekeliruan atau keberatan yang sah.</li>
             <li>Perbedaan tradisi dihormati; satu perguruan tidak dijadikan standar untuk semua.</li>
           </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- KONTRIBUSI SAYA -->
+    <section class="view" id="view-saya">
+      <div class="page-header">
+        <span class="eyebrow">Anggota</span><h1>Kontribusi Saya</h1>
+        <p>Semua draf dan kiriman Anda. Hanya admin yang dapat menerbitkan.</p>
+        <div class="page-actions"><button class="btn btn-dark" type="button" data-contrib="">＋ Tambah kontribusi</button></div>
+      </div>
+      <div id="myList"></div>
+    </section>
+
+    <!-- ADMIN -->
+    <section class="view" id="view-admin">
+      <div class="page-header"><span class="eyebrow">Pengelola situs</span><h1>Panel Admin</h1><p>Tinjau kontribusi, atur menu dan tampilan, serta kelola pengguna — semuanya dari sini, tanpa mengubah kode.</p></div>
+      <div class="atabs" id="adminTabs">
+        <button class="atab active" data-atab="review" type="button">Tinjauan</button>
+        <button class="atab" data-atab="menus" type="button">Menu</button>
+        <button class="atab" data-atab="site" type="button">Tampilan</button>
+        <button class="atab" data-atab="users" type="button">Pengguna</button>
+      </div>
+
+      <div id="admin-review">
+        <div class="chips" id="reviewChips"></div>
+        <div id="adminReview"></div>
+        <div class="page-actions"><button class="btn btn-primary" type="button" data-contrib="">＋ Tambah konten langsung</button></div>
+      </div>
+
+      <div id="admin-menus" class="hidden">
+        <div class="simple-panel">
+          <h2>Menu bawaan</h2>
+          <p class="muted">Centang untuk menampilkan menu di navigasi. Beranda selalu tampil.</p>
+          <div class="check-grid" id="builtinToggles"></div>
+        </div>
+        <div class="simple-panel panel-gap">
+          <div class="row-between"><h2 style="margin:0">Menu tambahan</h2><button class="btn btn-dark" id="btnAddMenu" type="button">＋ Tambah menu</button></div>
+          <p class="muted">Menu baru langsung muncul di navigasi. Pilih jenis sesuai isi: daftar tulisan, kegiatan, galeri foto, video, atau halaman biasa.</p>
+          <div id="customMenuList"></div>
+        </div>
+      </div>
+
+      <div id="admin-site" class="hidden">
+        <div class="simple-panel">
+          <h2>Pengaturan tampilan beranda</h2>
+          <div class="form-ok" id="siteMsg"></div>
+          <form id="formSite" novalidate>
+            <div class="field"><label for="stHeroTitle">Judul utama beranda</label><input id="stHeroTitle" type="text" maxlength="140"></div>
+            <div class="field"><label for="stHeroText">Teks pengantar beranda</label><textarea id="stHeroText" rows="3" maxlength="400"></textarea></div>
+            <div class="field"><label for="stAnnounce">Teks pengumuman (bar atas)</label><input id="stAnnounce" type="text" maxlength="160"></div>
+            <div class="field"><label for="stVideo">Video beranda (tautan YouTube / Vimeo / .mp4)</label><input id="stVideo" type="url" placeholder="https://www.youtube.com/watch?v=…"></div>
+            <h3>Bagian yang ditampilkan di beranda</h3>
+            <div class="check-grid">
+              <label class="check"><input type="checkbox" id="stShowVideo"> Video beranda</label>
+              <label class="check"><input type="checkbox" id="stShowStats"> Ringkasan platform</label>
+              <label class="check"><input type="checkbox" id="stShowFeatures"> Daftar fitur</label>
+              <label class="check"><input type="checkbox" id="stShowFeatured"> Direktori pilihan</label>
+              <label class="check"><input type="checkbox" id="stShowJourney"> Bagian petualangan</label>
+            </div>
+            <div class="ed-actions"><button class="btn btn-dark" type="submit" id="btnSaveSite">Simpan tampilan</button></div>
+          </form>
+        </div>
+      </div>
+
+      <div id="admin-users" class="hidden">
+        <div class="simple-panel">
+          <h2>Pengguna</h2>
+          <p class="muted">Ubah peran anggota menjadi admin atau sebaliknya. Admin dapat menerbitkan dan mengelola seluruh situs.</p>
+          <div id="userList"></div>
         </div>
       </div>
     </section>
@@ -377,8 +529,10 @@
         </div>
         <div class="form-ok" id="accMsg"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-dark" type="button" data-nav="saya">Kontribusi Saya</button>
+          <button class="btn btn-primary hidden" type="button" id="accAdminBtn" data-nav="admin">Panel Admin</button>
           <button class="btn btn-outline" id="btnResendVerify" type="button">Kirim ulang email verifikasi</button>
-          <button class="btn btn-dark" id="btnLogout" type="button">Keluar</button>
+          <button class="btn btn-outline" id="btnLogout" type="button">Keluar</button>
         </div>
       </div>
     </section>
@@ -386,8 +540,8 @@
 
   <footer>
     <div class="footer-inner">
-      <div><strong>Rumah Digital Pencak Silat Indonesia</strong><br>Blueprint awal · Prototipe antarmuka</div>
-      <div>Versi 0.2 · Firebase Authentication + Firestore</div>
+      <div><strong>Rumah Digital Pencak Silat Indonesia</strong><br>Ruang bersama warisan pencak silat Nusantara</div>
+      <div>Versi 0.3 · Firebase Authentication + Firestore</div>
     </div>
   </footer>
 
@@ -398,16 +552,13 @@
       <span class="eyebrow">Rumah Digital</span>
       <h2 id="authTitle">Masuk ke akun</h2>
       <p class="sub" id="authSub">Selamat datang kembali.</p>
-
       <div class="tabs" id="authTabs">
         <button class="tab active" data-tab="login" type="button">Masuk</button>
         <button class="tab" data-tab="register" type="button">Daftar</button>
       </div>
-
       <div class="form-error" id="authError" role="alert"></div>
       <div class="form-ok" id="authOk" role="status"></div>
 
-      <!-- Login -->
       <form id="formLogin" novalidate>
         <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="email" placeholder="nama@email.com" required></div>
         <div class="field">
@@ -418,7 +569,6 @@
         <button class="btn btn-dark btn-block" type="submit" id="btnLoginSubmit">Masuk</button>
       </form>
 
-      <!-- Daftar -->
       <form id="formRegister" class="hidden" novalidate>
         <div class="field"><label for="regName">Nama lengkap</label><input id="regName" type="text" autocomplete="name" placeholder="Nama Anda" required></div>
         <div class="field"><label for="regEmail">Email</label><input id="regEmail" type="email" autocomplete="email" placeholder="nama@email.com" required></div>
@@ -434,7 +584,6 @@
         <p class="small-note">Kami akan mengirim email verifikasi ke alamat Anda.</p>
       </form>
 
-      <!-- Lupa sandi -->
       <form id="formForgot" class="hidden" novalidate>
         <div class="field"><label for="forgotEmail">Email akun Anda</label><input id="forgotEmail" type="email" autocomplete="email" placeholder="nama@email.com" required></div>
         <button class="btn btn-dark btn-block" type="submit" id="btnForgotSubmit">Kirim tautan reset</button>
@@ -447,31 +596,63 @@
       </div>
     </div>
   </div>
+
+  <!-- MODAL EDITOR KONTRIBUSI -->
+  <div class="modal-backdrop" id="editorModal" role="dialog" aria-modal="true" aria-labelledby="edTitleH">
+    <div class="modal wide">
+      <button class="modal-close" id="edClose" type="button" aria-label="Tutup">✕</button>
+      <span class="eyebrow" id="edEyebrow">Kontribusi</span>
+      <h2 id="edTitleH">Tambah kontribusi</h2>
+      <div class="form-error" id="edError" role="alert"></div>
+      <form id="formEntry" novalidate>
+        <div class="field"><label for="edMenu">Menu tujuan</label><select id="edMenu"></select></div>
+        <div class="field"><label for="edTitle">Judul / nama</label><input id="edTitle" type="text" maxlength="150" placeholder="Mis. Nama perguruan atau judul tulisan"></div>
+        <div class="field-row">
+          <div class="field" id="edRegionSelWrap"><label for="edRegionSel">Wilayah</label>
+            <select id="edRegionSel"><option value="">— Pilih wilayah —</option><option>Sumatra</option><option>Jawa</option><option>Kalimantan</option><option>Sulawesi</option><option>Bali dan Nusa Tenggara</option><option>Maluku dan Papua</option><option>Luar Negeri</option></select></div>
+          <div class="field" id="edRegionWrap"><label for="edRegion">Lokasi kegiatan</label><input id="edRegion" type="text" maxlength="100"></div>
+          <div class="field" id="edDateWrap"><label for="edDate">Tanggal kegiatan</label><input id="edDate" type="date"></div>
+        </div>
+        <div class="field"><label for="edSummary">Ringkasan singkat</label><input id="edSummary" type="text" maxlength="220" placeholder="Satu–dua kalimat yang tampil di kartu"></div>
+        <div class="field"><label for="edBody">Isi tulisan</label><textarea id="edBody" rows="9" maxlength="20000" placeholder="Tulis isi di sini. Pisahkan paragraf dengan baris kosong. Cantumkan sumber/narasumber bila ada."></textarea></div>
+        <div class="field"><label for="edPhotos">Foto (maksimal 3)</label><input type="file" id="edPhotos" accept="image/*" multiple>
+          <div class="hint">Foto dikecilkan otomatis. Unggah hanya foto yang Anda punya izin menggunakannya.</div>
+          <div class="photo-thumbs" id="edThumbs"></div></div>
+        <div class="field"><label for="edVideo">Tautan video (opsional)</label><input id="edVideo" type="url" placeholder="https://www.youtube.com/watch?v=…  atau  https://vimeo.com/…"></div>
+        <div class="notice" id="edNotice"></div>
+        <div class="ed-actions" id="edActions"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL MENU (admin) -->
+  <div class="modal-backdrop" id="menuModal" role="dialog" aria-modal="true" aria-labelledby="mnHead">
+    <div class="modal">
+      <button class="modal-close" id="mnClose" type="button" aria-label="Tutup">✕</button>
+      <span class="eyebrow">Admin</span>
+      <h2 id="mnHead">Tambah menu</h2>
+      <div class="form-error" id="mnError" role="alert"></div>
+      <form id="formMenu" novalidate>
+        <div class="field"><label for="mnTitle">Nama menu</label><input id="mnTitle" type="text" maxlength="40" placeholder="Mis. Kegiatan, Galeri, Video"></div>
+        <div class="field"><label for="mnSlug">Alamat menu (huruf kecil, angka, strip)</label><input id="mnSlug" type="text" maxlength="30" placeholder="kegiatan"><div class="hint">Dipakai pada tautan: …/#m-kegiatan. Tidak dapat diubah setelah dibuat.</div></div>
+        <div class="field"><label for="mnType">Jenis menu</label><select id="mnType"></select></div>
+        <div class="field-row">
+          <div class="field"><label for="mnIcon">Ikon (1 simbol/emoji)</label><input id="mnIcon" type="text" maxlength="4" placeholder="◇"></div>
+          <div class="field"><label for="mnOrder">Urutan</label><input id="mnOrder" type="number" value="10"></div>
+        </div>
+        <div class="field"><label for="mnDesc">Deskripsi singkat</label><input id="mnDesc" type="text" maxlength="240"></div>
+        <div class="field hidden" id="mnContentWrap"><label for="mnContent">Isi halaman</label><textarea id="mnContent" rows="8" maxlength="20000"></textarea></div>
+        <div class="field"><label class="check"><input type="checkbox" id="mnVisible" checked> Tampilkan di navigasi</label></div>
+        <div class="field" id="mnContribWrap"><label class="check"><input type="checkbox" id="mnContrib" checked> Anggota boleh mengirim isi ke menu ini</label></div>
+        <div class="ed-actions"><button class="btn btn-dark" type="submit" id="btnSaveMenu">Simpan menu</button></div>
+      </form>
+    </div>
+  </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <!-- ===== SKRIP UTAMA (navigasi & direktori) ===== -->
+  <!-- ===== SKRIP INTI (navigasi) — tetap jalan walau Firebase gagal dimuat ===== -->
   <script>
-    // DATA DEMO: ganti hanya dengan data yang telah diverifikasi dan memiliki izin penggunaan.
-    const demoOrganizations = [
-      { id: "demo-01", name: "Contoh Perguruan A", region: "Jawa", area: "Wilayah contoh · Jawa",
-        summary: "Kartu contoh untuk menunjukkan bagaimana profil perguruan akan ditampilkan.",
-        focus: ["Profil", "Sejarah", "Budaya"], symbol: "᯽", color: "",
-        history: "Belum diisi. Masukkan sejarah berdasarkan sumber yang dapat diperiksa dan/atau keterangan resmi perguruan.",
-        source: "Belum ada sumber — data demo.", status: "DEMO" },
-      { id: "demo-02", name: "Contoh Perguruan B", region: "Sumatra", area: "Wilayah contoh · Sumatra",
-        summary: "Contoh tampilan untuk perguruan dari wilayah berbeda, bukan organisasi nyata.",
-        focus: ["Ragam gerak", "Dokumentasi"], symbol: "✦", color: "gold",
-        history: "Belum diisi. Materi sejarah dan karakteristik gerak harus disetujui oleh pihak yang berwenang.",
-        source: "Belum ada sumber — data demo.", status: "DEMO" },
-      { id: "demo-03", name: "Contoh Perguruan C", region: "Kalimantan", area: "Wilayah contoh · Kalimantan",
-        summary: "Contoh kartu direktori untuk menguji pencarian, filter wilayah, dan halaman detail.",
-        focus: ["Seni", "Tradisi", "Komunitas"], symbol: "◇", color: "blue",
-        history: "Belum diisi. Tambahkan informasi hanya setelah verifikasi dan persetujuan publikasi.",
-        source: "Belum ada sumber — data demo.", status: "DEMO" }
-    ];
-
-    const viewNames = ["beranda", "jelajah", "direktori", "detail", "ensiklopedia", "game", "kontribusi", "akun"];
-    const navButtons = document.querySelectorAll("[data-nav]");
+    const viewNames = ["beranda", "jelajah", "direktori", "detail", "ensiklopedia", "game", "kontribusi", "akun", "saya", "admin", "dyn"];
     const views = document.querySelectorAll(".view");
     const navLinks = document.getElementById("navLinks");
     const navToggle = document.getElementById("navToggle");
@@ -482,117 +663,57 @@
       toast.textContent = message;
       toast.classList.add("show");
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
-    }
-
-    function navigate(name) {
-      if (!viewNames.includes(name)) name = "beranda";
-      views.forEach(view => view.classList.toggle("active", view.id === `view-${name}`));
-      document.querySelectorAll(".nav-link").forEach(button => {
-        button.classList.toggle("active", button.dataset.nav === name);
-      });
-      navLinks.classList.remove("open");
-      navToggle.setAttribute("aria-expanded", "false");
-      if (location.hash !== `#${name}`) history.replaceState(null, "", `#${name}`);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3400);
     }
 
     function escapeHTML(value) {
-      return String(value).replace(/[&<>"']/g, char => ({
+      return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
         "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
       }[char]));
     }
 
-    function orgCard(org) {
-      const tags = org.focus.map(tag => `<span class="tag">${escapeHTML(tag)}</span>`).join("");
-      return `
-        <article class="org-card">
-          <div class="org-cover ${escapeHTML(org.color)}">
-            <span class="org-symbol" aria-hidden="true">${escapeHTML(org.symbol)}</span>
-            <span class="demo-tag">${escapeHTML(org.status)}</span>
-          </div>
-          <div class="org-body">
-            <h3>${escapeHTML(org.name)}</h3>
-            <div class="org-meta">⌖ ${escapeHTML(org.area)}</div>
-            <p>${escapeHTML(org.summary)}</p>
-            <div class="tag-row">${tags}</div>
-            <div class="card-actions">
-              <button class="btn btn-outline" data-detail="${escapeHTML(org.id)}">Lihat detail</button>
-            </div>
-          </div>
-        </article>`;
-    }
-
-    function renderOrganizations() {
-      const query = (document.getElementById("orgSearch")?.value || "").trim().toLowerCase();
-      const region = document.getElementById("regionFilter")?.value || "";
-      const filtered = demoOrganizations.filter(org => {
-        const searchable = `${org.name} ${org.region} ${org.area} ${org.summary} ${org.focus.join(" ")}`.toLowerCase();
-        return searchable.includes(query) && (!region || org.region === region);
+    function navigate(name, param) {
+      if (!viewNames.includes(name)) name = "beranda";
+      param = param || "";
+      views.forEach(view => view.classList.toggle("active", view.id === `view-${name}`));
+      document.querySelectorAll(".nav-link").forEach(button => {
+        button.classList.toggle("active", button.dataset.nav === name && (button.dataset.param || "") === param);
       });
-      const html = filtered.length
-        ? filtered.map(orgCard).join("")
-        : `<div class="empty-state"><strong>Belum ada hasil.</strong><br>Coba kata kunci atau filter wilayah yang berbeda.</div>`;
-      document.getElementById("directoryGrid").innerHTML = html;
-      document.getElementById("featuredGrid").innerHTML = demoOrganizations.slice(0, 3).map(orgCard).join("");
+      navLinks.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      const hash = name === "dyn" ? `m-${param}` : name;
+      if (location.hash !== `#${hash}`) history.replaceState(null, "", `#${hash}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.__currentView = { name, param };
+      if (typeof window.__onView === "function") window.__onView(name, param);
     }
-
-    function showDetail(id) {
-      const org = demoOrganizations.find(item => item.id === id);
-      if (!org) { showToast("Data tidak ditemukan."); return; }
-      document.getElementById("detailContent").innerHTML = `
-        <div class="detail-panel">
-          <div class="detail-art" aria-hidden="true">${escapeHTML(org.symbol)}</div>
-          <div class="detail-content">
-            <span class="eyebrow">Profil perguruan · ${escapeHTML(org.status)}</span>
-            <h2>${escapeHTML(org.name)}</h2>
-            <p>${escapeHTML(org.summary)}</p>
-            <div class="detail-meta">
-              <div><small>Wilayah contoh</small><strong>${escapeHTML(org.region)}</strong></div>
-              <div><small>Status data</small><strong>Data demo</strong></div>
-              <div><small>Fokus tampilan</small><strong>${escapeHTML(org.focus.join(", "))}</strong></div>
-              <div><small>Sumber</small><strong>${escapeHTML(org.source)}</strong></div>
-            </div>
-            <h3>Sejarah dan keterangan</h3>
-            <p>${escapeHTML(org.history)}</p>
-            <div class="disclaimer">Profil ini hanya contoh antarmuka, bukan informasi resmi. Ganti dengan data yang telah diverifikasi dan memperoleh izin publikasi yang sesuai.</div>
-          </div>
-        </div>`;
-      navigate("detail");
-    }
-
-    navButtons.forEach(button => {
-      button.addEventListener("click", event => {
-        event.preventDefault();
-        const name = button.dataset.nav;
-        if (name) navigate(name);
-      });
-    });
 
     document.addEventListener("click", event => {
-      const detailButton = event.target.closest("[data-detail]");
-      if (detailButton) showDetail(detailButton.dataset.detail);
+      const nav = event.target.closest("[data-nav]");
+      if (nav) {
+        event.preventDefault();
+        navigate(nav.dataset.nav, nav.dataset.param);
+        return;
+      }
       const actionButton = event.target.closest("[data-action]");
       if (actionButton?.dataset.action === "coming-soon") {
         showToast("Fitur ini belum aktif. Akan dikembangkan pada tahap berikutnya.");
       }
     });
 
-    document.getElementById("orgSearch").addEventListener("input", renderOrganizations);
-    document.getElementById("regionFilter").addEventListener("change", renderOrganizations);
     navToggle.addEventListener("click", () => {
       const isOpen = navLinks.classList.toggle("open");
       navToggle.setAttribute("aria-expanded", String(isOpen));
     });
 
-    renderOrganizations();
+    window.__currentView = { name: "beranda", param: "" };
     const initialRoute = location.hash.replace("#", "");
-    if (viewNames.includes(initialRoute) && initialRoute !== "akun" && initialRoute !== "detail") navigate(initialRoute);
+    if (viewNames.includes(initialRoute) && !["akun", "saya", "admin", "detail", "dyn"].includes(initialRoute)) navigate(initialRoute);
   </script>
 
-  <!-- ===== SKRIP AUTH (Firebase) ===== -->
+  <!-- ===== SKRIP APLIKASI (Firebase + admin + kontribusi) ===== -->
   <script type="module">
-    // ===== KONFIGURASI FIREBASE (sudah tertanam; tidak perlu file terpisah) =====
+    // ===== KONFIGURASI FIREBASE =====
     const firebaseConfig = {
       apiKey: "AIzaSyClyUdzd2kp8qX5TFcvwyOrUACsuPznnv0",
       authDomain: "rumah-digital-pencak-silat.firebaseapp.com",
@@ -604,18 +725,75 @@
     const FB = "https://www.gstatic.com/firebasejs/10.12.2/";
 
     const $ = id => document.getElementById(id);
-    const configured = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("ISI_");
+    const esc = escapeHTML;
+    const RESERVED = ["beranda", "jelajah", "direktori", "detail", "ensiklopedia", "game", "kontribusi", "akun", "saya", "admin", "dyn", "m"];
+    const BUILTIN_TOGGLE = [["jelajah", "Jelajah Nusantara"], ["direktori", "Direktori Perguruan"], ["ensiklopedia", "Ensiklopedia"], ["game", "Game Center"], ["kontribusi", "Kontribusi"]];
+    const BUILTIN_MENUS = {
+      direktori: { title: "Direktori Perguruan", type: "direktori", icon: "⌂" },
+      ensiklopedia: { title: "Ensiklopedia Silat", type: "artikel", icon: "▤" }
+    };
+    const TYPE_LABELS = {
+      artikel: "Artikel / tulisan",
+      kegiatan: "Kegiatan / agenda",
+      galeri: "Galeri foto",
+      video: "Video",
+      direktori: "Direktori (profil perguruan)",
+      halaman: "Halaman biasa (diisi admin)"
+    };
+    const STATUS_LABEL = { draft: "Draf", pending: "Menunggu tinjauan", published: "Terbit", rejected: "Ditolak", demo: "Demo" };
+    const NOT_READY = "Layanan online belum siap. Periksa koneksi internet lalu muat ulang halaman (Ctrl+F5).";
 
-    // Cegah form dikirim ulang/reload halaman apa pun yang terjadi.
-    ["formLogin", "formRegister", "formForgot"].forEach(id => $(id).addEventListener("submit", e => e.preventDefault()));
+    const DEMO = [
+      { id: "demo-01", menuId: "direktori", title: "Contoh Perguruan A", region: "Jawa", summary: "Kartu contoh untuk menunjukkan bagaimana profil perguruan akan ditampilkan.", body: "Belum diisi. Sejarah perguruan ditulis oleh anggota berdasarkan sumber yang dapat diperiksa dan/atau keterangan resmi perguruan.", photos: [], status: "demo", authorName: "Data contoh" },
+      { id: "demo-02", menuId: "direktori", title: "Contoh Perguruan B", region: "Sumatra", summary: "Contoh tampilan untuk perguruan dari wilayah berbeda, bukan organisasi nyata.", body: "Belum diisi. Materi sejarah dan karakteristik gerak harus disetujui oleh pihak yang berwenang.", photos: [], status: "demo", authorName: "Data contoh" },
+      { id: "demo-03", menuId: "direktori", title: "Contoh Perguruan C", region: "Kalimantan", summary: "Contoh kartu direktori untuk menguji pencarian, filter wilayah, dan halaman detail.", body: "Belum diisi. Tambahkan informasi hanya setelah verifikasi dan persetujuan publikasi.", photos: [], status: "demo", authorName: "Data contoh" }
+    ];
 
-    const modal = $("authModal");
-    const errBox = $("authError");
-    const okBox = $("authOk");
-    let mode = "login";
+    // ===== STATE =====
+    const S = {
+      fb: null, user: null, profile: null, isAdmin: false,
+      menus: [], settings: {}, cache: {}, entries: new Map(), lists: {},
+      authReady: false, menusReady: false, routed: false,
+      view: window.__currentView || { name: "beranda", param: "" },
+      adminEntries: [], adminFilter: "pending", adminTab: "review", users: []
+    };
+    const DEF = { heroTitle: $("hero-title").textContent, heroText: $("heroText").textContent, announce: $("announce").textContent };
 
+    // ===== UTIL =====
+    const trunc = (t, n) => { t = String(t || "").replace(/\s+/g, " ").trim(); return t.length > n ? t.slice(0, n - 1) + "…" : t; };
+    const safeImg = s => (typeof s === "string" && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(s)) ? s : "";
+    const tsSec = e => (e.createdAt && e.createdAt.seconds) || 0;
+    function fmtTs(ts) {
+      try { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""; }
+      catch { return ""; }
+    }
+    function fmtDateStr(s) {
+      try { return new Date(s + "T00:00:00").toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }); } catch { return s; }
+    }
+    function paragraphs(t) {
+      return String(t || "").split(/\n{2,}/).map(p => p.trim()).filter(Boolean).map(p => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
+    }
+    function videoHTML(url) {
+      url = String(url || "").trim();
+      if (!/^https:\/\//i.test(url)) return "";
+      let m = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/i);
+      if (m) return `<div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/${m[1]}" title="Video" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture"></iframe></div>`;
+      m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
+      if (m) return `<div class="video-embed"><iframe src="https://player.vimeo.com/video/${m[1]}" title="Video" loading="lazy" allowfullscreen allow="picture-in-picture"></iframe></div>`;
+      if (/\.(mp4|webm)(\?.*)?$/i.test(url)) return `<video class="video-native" controls preload="metadata" src="${esc(url)}"></video>`;
+      return `<p><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Buka video ↗</a></p>`;
+    }
+    const customMenu = id => S.menus.find(m => m.id === id);
+    const menuTitle = id => (BUILTIN_MENUS[id] && BUILTIN_MENUS[id].title) || (customMenu(id) && customMenu(id).title) || id;
+    const menuType = id => (BUILTIN_MENUS[id] && BUILTIN_MENUS[id].type) || (customMenu(id) && customMenu(id).type) || "artikel";
+    const menuIcon = id => (BUILTIN_MENUS[id] && BUILTIN_MENUS[id].icon) || (customMenu(id) && customMenu(id).icon) || "◇";
+    function remember(items) { items.forEach(e => S.entries.set(e.id, e)); }
+    remember(DEMO);
+    function needFb() { if (!S.fb) { showToast(NOT_READY); return true; } return false; }
+
+    // ===== MODAL AUTH =====
+    const modal = $("authModal"), errBox = $("authError"), okBox = $("authOk");
     function setMode(next) {
-      mode = next;
       $("formLogin").classList.toggle("hidden", next !== "login");
       $("formRegister").classList.toggle("hidden", next !== "register");
       $("formForgot").classList.toggle("hidden", next !== "forgot");
@@ -634,25 +812,8 @@
     function clearMsg() { errBox.classList.remove("show"); okBox.classList.remove("show"); }
     function showErr(m) { okBox.classList.remove("show"); errBox.textContent = m; errBox.classList.add("show"); }
     function showOk(m) { errBox.classList.remove("show"); okBox.textContent = m; okBox.classList.add("show"); }
-    function openModal(next) { setMode(next); modal.classList.add("open"); setTimeout(() => modal.querySelector("input:not(.hidden)")?.focus(), 50); }
+    function openModal(next) { setMode(next); modal.classList.add("open"); setTimeout(() => modal.querySelector("form:not(.hidden) input")?.focus(), 50); }
     function closeModal() { modal.classList.remove("open"); }
-
-    $("btnOpenLogin").addEventListener("click", () => openModal("login"));
-    $("btnOpenRegister").addEventListener("click", () => openModal("register"));
-    $("heroRegister").addEventListener("click", () => openModal("register"));
-    $("authClose").addEventListener("click", closeModal);
-    modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
-    document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
-    document.querySelectorAll("#authTabs .tab").forEach(t => t.addEventListener("click", () => setMode(t.dataset.tab)));
-    $("btnForgot").addEventListener("click", () => { $("forgotEmail").value = $("loginEmail").value; setMode("forgot"); });
-    $("btnBackLogin").addEventListener("click", () => setMode("login"));
-    document.querySelectorAll(".pw-toggle").forEach(b => b.addEventListener("click", () => {
-      const input = $(b.dataset.pw);
-      const show = input.type === "password";
-      input.type = show ? "text" : "password";
-      b.textContent = show ? "Sembunyi" : "Lihat";
-    }));
-
     function friendlyError(err) {
       const map = {
         "auth/email-already-in-use": "Email ini sudah terdaftar. Silakan masuk.",
@@ -667,182 +828,745 @@
         "auth/cancelled-popup-request": "Permintaan masuk dibatalkan.",
         "auth/unauthorized-domain": "Domain ini belum diizinkan di Firebase (Authentication → Settings → Authorized domains).",
         "auth/operation-not-allowed": "Metode login ini belum diaktifkan di Firebase Console.",
-        "auth/user-disabled": "Akun ini dinonaktifkan."
+        "auth/user-disabled": "Akun ini dinonaktifkan.",
+        "permission-denied": "Ditolak oleh aturan keamanan. Pastikan Anda sudah masuk dan aturan Firestore sudah dipublikasikan."
       };
-      return map[err?.code] || "Terjadi kesalahan. Coba lagi. (" + (err?.code || err?.message || "tidak diketahui") + ")";
+      return map[err && err.code] || "Terjadi kesalahan. Coba lagi. (" + ((err && (err.code || err.message)) || "tidak diketahui") + ")";
     }
-
     function busy(btn, on, label) { btn.disabled = on; if (label) btn.textContent = label; }
 
-    if (!configured) {
-      // Mode belum dikonfigurasi: tampilkan pesan jelas, jangan crash.
-      const warn = () => { openModal("login"); showErr("Firebase belum dikonfigurasi. Isi file firebase-config.js dengan konfigurasi proyek Anda."); };
-      $("formLogin").addEventListener("submit", e => { e.preventDefault(); warn(); });
-      $("formRegister").addEventListener("submit", e => { e.preventDefault(); warn(); });
-      $("formForgot").addEventListener("submit", e => { e.preventDefault(); warn(); });
-      $("btnGoogle").addEventListener("click", warn);
-      $("btnLogout").addEventListener("click", () => {});
-      console.warn("firebase-config.js belum diisi.");
-    } else try {
-      const [{ initializeApp }, A, S] = await Promise.all([
-        import(FB + "firebase-app.js"),
-        import(FB + "firebase-auth.js"),
-        import(FB + "firebase-firestore.js")
+    $("authClose").addEventListener("click", closeModal);
+    modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+    document.querySelectorAll("#authTabs .tab").forEach(t => t.addEventListener("click", () => setMode(t.dataset.tab)));
+    $("btnForgot").addEventListener("click", () => { $("forgotEmail").value = $("loginEmail").value; setMode("forgot"); });
+    $("btnBackLogin").addEventListener("click", () => setMode("login"));
+    document.querySelectorAll(".pw-toggle").forEach(b => b.addEventListener("click", () => {
+      const input = $(b.dataset.pw);
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      b.textContent = show ? "Sembunyi" : "Lihat";
+    }));
+    ["formLogin", "formRegister", "formForgot", "formEntry", "formMenu", "formSite"].forEach(id => $(id).addEventListener("submit", e => e.preventDefault()));
+
+    // ===== TAMPILAN: kartu & daftar =====
+    function entryCard(e, opts = {}) {
+      const img = safeImg(e.photos && e.photos[0]);
+      const type = menuType(e.menuId);
+      const meta = [e.region, type === "kegiatan" && e.date ? fmtDateStr(e.date) : ""].filter(Boolean).map(esc).join(" · ");
+      const tag = e.status === "demo" ? "DEMO" : (opts.showStatus ? (STATUS_LABEL[e.status] || "") : "");
+      return `<article class="org-card clickable" data-entry="${esc(e.id)}">
+        <div class="org-cover ${img ? "has-img" : ""}">
+          ${img ? `<img class="cover-img" src="${img}" alt="" loading="lazy">` : ""}
+          <span class="org-symbol" aria-hidden="true">${esc(menuIcon(e.menuId))}</span>
+          ${tag ? `<span class="demo-tag">${esc(tag)}</span>` : ""}
+        </div>
+        <div class="org-body">
+          <h3>${esc(e.title)}</h3>
+          ${meta ? `<div class="org-meta">⌖ ${meta}</div>` : ""}
+          <p>${esc(e.summary || trunc(e.body, 140))}</p>
+          <div class="card-actions"><button class="btn btn-outline" type="button" data-entry="${esc(e.id)}">Baca selengkapnya</button></div>
+        </div>
+      </article>`;
+    }
+
+    const LISTS = {
+      direktori: { grid: "directoryGrid", search: "orgSearch", region: "regionFilter" },
+      ensiklopedia: { grid: "encGrid", search: "encSearch" },
+      dyn: { grid: "dynGrid", search: "dynSearch" }
+    };
+    function paintList(key) {
+      const cfg = LISTS[key], st = S.lists[key] || { items: [] };
+      const q = (cfg.search ? $(cfg.search).value : "").trim().toLowerCase();
+      const region = cfg.region ? $(cfg.region).value : "";
+      let items = st.items, demo = false;
+      if (!items.length && key === "direktori") { items = DEMO; demo = true; }
+      if (key === "direktori") $("demoNotice").classList.toggle("hidden", !demo);
+      const total = items.length;
+      items = items.filter(e => (!q || `${e.title} ${e.region || ""} ${e.summary || ""} ${e.body || ""}`.toLowerCase().includes(q)) && (!region || e.region === region));
+      $(cfg.grid).innerHTML = items.length ? items.map(e => entryCard(e)).join("")
+        : `<div class="empty-state"><strong>${total ? "Belum ada hasil." : "Belum ada isi yang diterbitkan."}</strong><br>${total ? "Coba kata kunci atau filter yang berbeda." : "Anggota yang sudah masuk dapat menambahkan lewat tombol “Tambah”. Isi baru tampil setelah disetujui admin."}</div>`;
+    }
+    ["orgSearch", "regionFilter", "encSearch", "dynSearch"].forEach(id => {
+      const key = id === "orgSearch" || id === "regionFilter" ? "direktori" : id === "encSearch" ? "ensiklopedia" : "dyn";
+      $(id).addEventListener(id === "regionFilter" ? "change" : "input", () => paintList(key));
+    });
+
+    async function getPublished(menuId) {
+      if (S.cache[menuId]) return S.cache[menuId];
+      const { F, db } = S.fb;
+      const snap = await F.getDocs(F.query(F.collection(db, "entries"), F.where("menuId", "==", menuId), F.where("status", "==", "published")));
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => tsSec(b) - tsSec(a));
+      remember(items);
+      S.cache[menuId] = items;
+      return items;
+    }
+    async function loadList(key, menuId) {
+      let items = [];
+      if (S.fb) {
+        $(LISTS[key].grid).innerHTML = `<div class="empty-state">Memuat…</div>`;
+        items = await getPublished(menuId);
+      }
+      S.lists[key] = { items, menuId };
+      paintList(key);
+    }
+    async function loadHome() {
+      let items = [];
+      if (S.fb) { try { items = (await getPublished("direktori")).slice(0, 3); } catch (e) { console.warn(e); } }
+      if (!items.length) items = DEMO;
+      $("featuredGrid").innerHTML = items.map(e => entryCard(e)).join("");
+    }
+    async function loadDyn(slug) {
+      const m = customMenu(slug);
+      if (!m || (m.visible === false && !S.isAdmin)) { if (S.menusReady) navigate("beranda"); return; }
+      $("dynTitle").textContent = m.title;
+      $("dynDesc").textContent = m.description || "";
+      $("dynEyebrow").textContent = (TYPE_LABELS[m.type] || "Menu").split(" (")[0];
+      const canAdd = m.type !== "halaman" && S.user && (S.isAdmin || m.allowContrib !== false);
+      $("dynAdd").classList.toggle("hidden", !canAdd);
+      $("dynAdd").dataset.contrib = slug;
+      $("dynEditPage").classList.toggle("hidden", !(S.isAdmin));
+      $("dynEditPage").dataset.slug = slug;
+      if (m.type === "halaman") {
+        $("dynPage").classList.remove("hidden"); $("dynListWrap").classList.add("hidden");
+        $("dynPage").innerHTML = paragraphs(m.content) || `<p class="muted">Halaman ini belum diisi.</p>`;
+      } else {
+        $("dynPage").classList.add("hidden"); $("dynListWrap").classList.remove("hidden");
+        $("dynSearch").value = "";
+        await loadList("dyn", slug);
+      }
+    }
+
+    // ===== DETAIL ENTRI =====
+    const canEdit = e => !!S.user && e.status !== "demo" && (S.isAdmin || e.authorUid === S.user.uid);
+    async function showEntry(id, backOverride) {
+      const back = backOverride || { nav: S.view.name, param: S.view.param };
+      let e = S.entries.get(id);
+      if (!e && S.fb) {
+        try {
+          const { F, db } = S.fb;
+          const snap = await F.getDoc(F.doc(db, "entries", id));
+          if (snap.exists()) { e = { id, ...snap.data() }; S.entries.set(id, e); }
+        } catch (err) { console.warn(err); }
+      }
+      if (!e) { showToast("Tulisan tidak ditemukan atau belum diterbitkan."); return; }
+      const photos = (e.photos || []).map(safeImg).filter(Boolean);
+      const type = menuType(e.menuId);
+      const meta = [
+        esc(menuTitle(e.menuId)),
+        e.region ? "⌖ " + esc(e.region) : "",
+        type === "kegiatan" && e.date ? esc(fmtDateStr(e.date)) : "",
+        e.authorName ? "oleh " + esc(e.authorName) : "",
+        fmtTs(e.publishedAt || e.createdAt) ? esc(fmtTs(e.publishedAt || e.createdAt)) : ""
+      ].filter(Boolean).join(" · ");
+      const showNote = e.adminNote && e.status === "rejected" && canEdit(e);
+      $("detailContent").innerHTML = `
+        <div class="detail-panel single"><div class="detail-content">
+          <span class="eyebrow">${esc(menuTitle(e.menuId))} ${e.status && e.status !== "published" ? `<span class="badge ${esc(e.status)}">${esc(STATUS_LABEL[e.status] || e.status)}</span>` : ""}</span>
+          <h2>${esc(e.title)}</h2>
+          <div class="entry-meta">${meta}</div>
+          ${e.summary ? `<p><strong>${esc(e.summary)}</strong></p>` : ""}
+          ${photos.length ? `<div class="gallery">${photos.map(p => `<img src="${p}" alt="Foto ${esc(e.title)}" loading="lazy">`).join("")}</div>` : ""}
+          ${videoHTML(e.videoUrl)}
+          <div class="prose">${paragraphs(e.body)}</div>
+          ${showNote ? `<div class="admin-note"><strong>Catatan admin:</strong> ${esc(e.adminNote)}</div>` : ""}
+          ${e.status === "demo" ? `<div class="disclaimer">Profil ini hanya contoh antarmuka, bukan informasi resmi.</div>` : ""}
+          ${canEdit(e) ? `<div class="ed-actions"><button class="btn btn-dark" type="button" data-act="edit" data-id="${esc(e.id)}">Edit</button></div>` : ""}
+        </div></div>`;
+      const b = $("detailBack");
+      const target = back.nav && back.nav !== "detail" ? back : { nav: "beranda", param: "" };
+      b.dataset.nav = target.nav; b.dataset.param = target.param || "";
+      navigate("detail");
+    }
+
+    // ===== BARIS (Kontribusi Saya & Admin) =====
+    function entryRow(e, mode) {
+      const admin = mode === "admin";
+      const acts = [`<button class="btn btn-outline mini" type="button" data-act="view" data-id="${esc(e.id)}">Lihat</button>`,
+        `<button class="btn btn-outline mini" type="button" data-act="edit" data-id="${esc(e.id)}">Edit</button>`];
+      if (admin) {
+        if (e.status !== "published") acts.push(`<button class="btn btn-primary mini" type="button" data-act="publish" data-id="${esc(e.id)}">Terbitkan</button>`);
+        if (e.status === "pending" || e.status === "draft") acts.push(`<button class="btn btn-danger mini" type="button" data-act="reject" data-id="${esc(e.id)}">Tolak</button>`);
+        if (e.status === "published") acts.push(`<button class="btn btn-outline mini" type="button" data-act="unpublish" data-id="${esc(e.id)}">Tarik</button>`);
+        acts.push(`<button class="btn btn-danger mini" type="button" data-act="del" data-id="${esc(e.id)}">Hapus</button>`);
+      } else if (e.status !== "published") {
+        acts.push(`<button class="btn btn-danger mini" type="button" data-act="del" data-id="${esc(e.id)}">Hapus</button>`);
+      }
+      const note = e.adminNote && e.status === "rejected" ? `<div class="admin-note"><strong>Catatan admin:</strong> ${esc(e.adminNote)}</div>` : "";
+      return `<div class="row-card"><div class="row-main"><strong>${esc(e.title)}</strong>
+        <div class="row-sub">${esc(menuTitle(e.menuId))}${admin ? " · " + esc(e.authorName || "—") : ""}${fmtTs(e.createdAt) ? " · " + esc(fmtTs(e.createdAt)) : ""}</div>${note}</div>
+        <div class="row-side"><span class="badge ${esc(e.status)}">${esc(STATUS_LABEL[e.status] || e.status)}</span><div class="row-actions">${acts.join("")}</div></div></div>`;
+    }
+
+    async function loadMine() {
+      if (!S.authReady) return;
+      if (!S.user) { navigate("beranda"); openModal("login"); return; }
+      if (needFb()) return;
+      const { F, db } = S.fb;
+      $("myList").innerHTML = `<div class="empty-state">Memuat…</div>`;
+      const snap = await F.getDocs(F.query(F.collection(db, "entries"), F.where("authorUid", "==", S.user.uid)));
+      const items = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => tsSec(b) - tsSec(a));
+      remember(items);
+      $("myList").innerHTML = items.length ? items.map(e => entryRow(e, "me")).join("")
+        : `<div class="empty-state"><strong>Belum ada kontribusi.</strong><br>Klik “Tambah kontribusi” untuk menulis profil perguruan, artikel, atau kegiatan.</div>`;
+    }
+
+    // ===== AKSI ENTRI (lihat/edit/terbitkan/tolak/tarik/hapus) =====
+    async function doAct(act, id) {
+      const e = S.entries.get(id);
+      if (act === "view") return showEntry(id);
+      if (act === "edit") { if (e) openEditor(e.menuId, e); return; }
+      if (needFb()) return;
+      const { F, db } = S.fb;
+      const ref = F.doc(db, "entries", id);
+      try {
+        if (act === "publish") {
+          if (!S.isAdmin) return;
+          await F.updateDoc(ref, { status: "published", adminNote: "", publishedAt: F.serverTimestamp(), updatedAt: F.serverTimestamp() });
+          showToast("Diterbitkan. Sekarang tampil untuk semua pengunjung.");
+        } else if (act === "reject") {
+          const note = prompt("Catatan untuk penulis (alasan penolakan / hal yang perlu diperbaiki):", "");
+          if (note === null) return;
+          await F.updateDoc(ref, { status: "rejected", adminNote: String(note).slice(0, 500), updatedAt: F.serverTimestamp() });
+          showToast("Ditolak dan catatan dikirim ke penulis.");
+        } else if (act === "unpublish") {
+          await F.updateDoc(ref, { status: "pending", updatedAt: F.serverTimestamp() });
+          showToast("Ditarik dari tampilan publik (kembali menunggu tinjauan).");
+        } else if (act === "del") {
+          if (!confirm("Hapus permanen kiriman ini? Tindakan ini tidak dapat dibatalkan.")) return;
+          await F.deleteDoc(ref); S.entries.delete(id);
+          showToast("Dihapus.");
+        }
+        S.cache = {};
+        loadView(S.view.name, S.view.param);
+      } catch (err) { console.error(err); showToast(friendlyError(err)); }
+    }
+
+    // ===== EDITOR KONTRIBUSI =====
+    const ed = { id: null, photos: [], status: null };
+    function contribMenus() {
+      const list = [{ id: "direktori", title: BUILTIN_MENUS.direktori.title }, { id: "ensiklopedia", title: BUILTIN_MENUS.ensiklopedia.title }];
+      S.menus.filter(m => m.type !== "halaman" && (S.isAdmin || (m.visible !== false && m.allowContrib !== false))).forEach(m => list.push({ id: m.id, title: m.title }));
+      return list;
+    }
+    function updateEdFields() {
+      const type = menuType($("edMenu").value);
+      $("edRegionSelWrap").classList.toggle("hidden", type !== "direktori");
+      $("edRegionWrap").classList.toggle("hidden", type !== "kegiatan");
+      $("edDateWrap").classList.toggle("hidden", type !== "kegiatan");
+    }
+    $("edMenu").addEventListener("change", updateEdFields);
+    function showEdErr(m) { $("edError").textContent = m; $("edError").classList.add("show"); }
+    function renderThumbs() {
+      $("edThumbs").innerHTML = ed.photos.map((p, i) => `<div class="thumb"><img src="${safeImg(p)}" alt="Foto ${i + 1}"><button type="button" data-rm="${i}" aria-label="Hapus foto">✕</button></div>`).join("");
+    }
+    function openEditor(menuId, entry) {
+      if (!S.user) { showToast("Masuk atau daftar dulu untuk menambahkan kontribusi."); openModal("login"); return; }
+      if (needFb()) return;
+      const menus = contribMenus();
+      const want = entry ? entry.menuId : (menus.some(m => m.id === menuId) ? menuId : menus[0].id);
+      if (!menus.some(m => m.id === want)) menus.push({ id: want, title: menuTitle(want) });
+      ed.id = entry ? entry.id : null;
+      ed.photos = entry ? (entry.photos || []).map(safeImg).filter(Boolean) : [];
+      ed.status = entry ? entry.status : null;
+      $("edMenu").innerHTML = menus.map(m => `<option value="${esc(m.id)}">${esc(m.title)}</option>`).join("");
+      $("edMenu").value = want;
+      $("edTitle").value = entry ? entry.title || "" : "";
+      $("edRegionSel").value = entry ? entry.region || "" : "";
+      $("edRegion").value = entry ? entry.region || "" : "";
+      $("edDate").value = entry ? entry.date || "" : "";
+      $("edSummary").value = entry ? entry.summary || "" : "";
+      $("edBody").value = entry ? entry.body || "" : "";
+      $("edVideo").value = entry ? entry.videoUrl || "" : "";
+      $("edError").classList.remove("show");
+      $("edEyebrow").textContent = S.isAdmin ? "Admin" : "Kontribusi";
+      $("edTitleH").textContent = entry ? "Edit isi" : "Tambah kontribusi";
+      $("edNotice").textContent = S.isAdmin
+        ? "Sebagai admin, isi yang Anda terbitkan langsung tampil untuk semua pengunjung."
+        : (entry && entry.status === "published"
+          ? "Perubahan pada tulisan yang sudah terbit akan dikirim ulang ke admin dan sementara tidak tampil sampai disetujui."
+          : "Draf hanya terlihat oleh Anda. Setelah dikirim, admin yang memutuskan apakah isi diterbitkan.");
+      $("edActions").innerHTML = `<button class="btn btn-outline" type="button" data-save="draft">Simpan draf</button>` +
+        (S.isAdmin ? `<button class="btn btn-primary" type="button" data-save="published">Simpan & terbitkan</button>`
+          : `<button class="btn btn-primary" type="button" data-save="pending">Kirim untuk ditinjau</button>`);
+      updateEdFields(); renderThumbs();
+      $("editorModal").classList.add("open");
+      setTimeout(() => $("edTitle").focus(), 60);
+    }
+    function closeEditor() { $("editorModal").classList.remove("open"); }
+    $("edClose").addEventListener("click", closeEditor);
+    $("editorModal").addEventListener("click", e => { if (e.target === $("editorModal")) closeEditor(); });
+    $("edThumbs").addEventListener("click", e => {
+      const b = e.target.closest("[data-rm]");
+      if (b) { ed.photos.splice(Number(b.dataset.rm), 1); renderThumbs(); }
+    });
+
+    function compress(file) {
+      return new Promise((resolve, reject) => {
+        const img = new Image(), url = URL.createObjectURL(file);
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          const k = Math.min(1, 900 / Math.max(img.width, img.height));
+          const w = Math.max(1, Math.round(img.width * k)), h = Math.max(1, Math.round(img.height * k));
+          const c = document.createElement("canvas"); c.width = w; c.height = h;
+          const ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
+          let q = .78, out = c.toDataURL("image/jpeg", q);
+          while (out.length > 190000 && q > .35) { q -= .08; out = c.toDataURL("image/jpeg", q); }
+          out.length > 300000 ? reject(new Error("terlalu besar")) : resolve(out);
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("tidak terbaca")); };
+        img.src = url;
+      });
+    }
+    $("edPhotos").addEventListener("change", async e => {
+      const files = [...e.target.files]; e.target.value = "";
+      $("edError").classList.remove("show");
+      for (const f of files) {
+        if (ed.photos.length >= 3) { showEdErr("Maksimal 3 foto per tulisan."); break; }
+        if (!/^image\//.test(f.type)) continue;
+        try { ed.photos.push(await compress(f)); } catch { showEdErr("Foto tidak dapat diproses: " + f.name + ". Coba format JPG/PNG."); }
+      }
+      renderThumbs();
+    });
+
+    async function saveEntry(target) {
+      $("edError").classList.remove("show");
+      if (needFb()) return;
+      const menuId = $("edMenu").value, type = menuType(menuId);
+      const title = $("edTitle").value.trim(), summary = $("edSummary").value.trim(), body = $("edBody").value.trim();
+      const videoUrl = $("edVideo").value.trim();
+      if (title.length < 3) return showEdErr("Isi judul / nama minimal 3 karakter.");
+      if (target !== "draft" && !body && !summary && !ed.photos.length && !videoUrl) return showEdErr("Isi tulisan, foto, atau video sebelum dikirim.");
+      if (videoUrl && !/^https:\/\/\S+$/i.test(videoUrl)) return showEdErr("Tautan video harus diawali https://");
+      if (type === "direktori" && target !== "draft" && !$("edRegionSel").value) return showEdErr("Pilih wilayah perguruan.");
+      const size = ed.photos.reduce((a, p) => a + p.length, 0) + body.length + summary.length;
+      if (size > 880000) return showEdErr("Isi terlalu besar. Kurangi jumlah/ukuran foto atau panjang tulisan.");
+      let status = target;
+      if (!S.isAdmin && status === "published") status = "pending";
+      const { F, db } = S.fb;
+      const data = {
+        menuId, title, summary, body,
+        region: type === "direktori" ? $("edRegionSel").value : type === "kegiatan" ? $("edRegion").value.trim() : "",
+        date: type === "kegiatan" ? $("edDate").value : "",
+        photos: ed.photos, videoUrl, status, updatedAt: F.serverTimestamp()
+      };
+      const btns = [...$("edActions").querySelectorAll("button")]; btns.forEach(b => b.disabled = true);
+      try {
+        if (ed.id) {
+          if (status === "published") { data.adminNote = ""; data.publishedAt = F.serverTimestamp(); }
+          await F.updateDoc(F.doc(db, "entries", ed.id), data);
+        } else {
+          data.authorUid = S.user.uid;
+          data.authorName = (S.profile && S.profile.name) || S.user.displayName || (S.user.email || "").split("@")[0];
+          data.createdAt = F.serverTimestamp();
+          data.adminNote = "";
+          if (status === "published") data.publishedAt = F.serverTimestamp();
+          await F.addDoc(F.collection(db, "entries"), data);
+        }
+        S.cache = {};
+        closeEditor();
+        showToast(status === "published" ? "Tersimpan dan diterbitkan." : status === "pending" ? "Terkirim. Menunggu tinjauan admin." : "Draf tersimpan.");
+        navigate(S.isAdmin ? "admin" : "saya");
+      } catch (err) { console.error(err); showEdErr(friendlyError(err)); }
+      finally { btns.forEach(b => b.disabled = false); }
+    }
+    $("edActions").addEventListener("click", e => {
+      const b = e.target.closest("[data-save]");
+      if (b) saveEntry(b.dataset.save);
+    });
+
+    // ===== ADMIN =====
+    async function loadAdmin() {
+      if (!S.authReady) return;
+      if (!S.isAdmin) { showToast("Halaman ini khusus admin."); navigate("beranda"); return; }
+      if (needFb()) return;
+      const { F, db } = S.fb;
+      const snap = await F.getDocs(F.collection(db, "entries"));
+      S.adminEntries = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => tsSec(b) - tsSec(a));
+      remember(S.adminEntries);
+      paintAdmin();
+    }
+    function paintAdmin() {
+      const tab = S.adminTab;
+      document.querySelectorAll("[data-atab]").forEach(b => b.classList.toggle("active", b.dataset.atab === tab));
+      ["review", "menus", "site", "users"].forEach(t => $("admin-" + t).classList.toggle("hidden", t !== tab));
+      if (tab === "review") paintReview();
+      else if (tab === "menus") paintMenus();
+      else if (tab === "site") paintSite();
+      else if (tab === "users") loadUsers();
+    }
+    function paintReview() {
+      const all = S.adminEntries, count = s => all.filter(e => e.status === s).length;
+      const chips = [["pending", "Menunggu"], ["published", "Terbit"], ["rejected", "Ditolak"], ["draft", "Draf"], ["all", "Semua"]];
+      $("reviewChips").innerHTML = chips.map(([k, l]) => `<button class="chip ${S.adminFilter === k ? "active" : ""}" type="button" data-rv="${k}">${l} (${k === "all" ? all.length : count(k)})</button>`).join("");
+      const list = S.adminFilter === "all" ? all : all.filter(e => e.status === S.adminFilter);
+      $("adminReview").innerHTML = list.length ? list.map(e => entryRow(e, "admin")).join("")
+        : `<div class="empty-state"><strong>Tidak ada isi di kategori ini.</strong></div>`;
+    }
+    function paintMenus() {
+      const hidden = new Set(S.settings.hiddenBuiltins || []);
+      $("builtinToggles").innerHTML = BUILTIN_TOGGLE.map(([k, l]) => `<label class="check"><input type="checkbox" data-bt="${k}" ${hidden.has(k) ? "" : "checked"}> ${esc(l)}</label>`).join("");
+      $("customMenuList").innerHTML = S.menus.length ? S.menus.map(m => `<div class="row-card"><div class="row-main"><strong>${esc(m.icon || "◇")} ${esc(m.title)}</strong>
+        <div class="row-sub">${esc(TYPE_LABELS[m.type] || m.type)} · alamat #m-${esc(m.id)} · urutan ${esc(m.order == null ? 0 : m.order)}</div></div>
+        <div class="row-side"><span class="badge ${m.visible === false ? "draft" : "published"}">${m.visible === false ? "Disembunyikan" : "Tampil"}</span>
+        <div class="row-actions"><button class="btn btn-outline mini" type="button" data-menu-act="edit" data-id="${esc(m.id)}">Edit</button>
+        <button class="btn btn-danger mini" type="button" data-menu-act="del" data-id="${esc(m.id)}">Hapus</button></div></div></div>`).join("")
+        : `<div class="empty-state">Belum ada menu tambahan. Klik “Tambah menu”.</div>`;
+    }
+    function paintSite() {
+      const s = S.settings;
+      $("stHeroTitle").value = s.heroTitle || ""; $("stHeroText").value = s.heroText || ""; $("stAnnounce").value = s.announce || "";
+      $("stVideo").value = s.heroVideoUrl || "";
+      $("stShowVideo").checked = !!s.showHeroVideo;
+      $("stShowStats").checked = s.showStats !== false; $("stShowFeatures").checked = s.showFeatures !== false;
+      $("stShowFeatured").checked = s.showFeatured !== false; $("stShowJourney").checked = s.showJourney !== false;
+      $("siteMsg").classList.remove("show");
+    }
+    async function loadUsers() {
+      if (needFb()) return;
+      const { F, db } = S.fb;
+      $("userList").innerHTML = `<div class="empty-state">Memuat…</div>`;
+      const snap = await F.getDocs(F.collection(db, "users"));
+      S.users = snap.docs.map(d => ({ uid: d.id, ...d.data() })).sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+      $("userList").innerHTML = S.users.map(u => `<div class="row-card"><div class="row-main"><strong>${esc(u.name || "(tanpa nama)")}</strong><div class="row-sub">${esc(u.email || "")}${fmtTs(u.createdAt) ? " · bergabung " + esc(fmtTs(u.createdAt)) : ""}</div></div>
+        <div class="row-side"><select class="filter-select" data-uid="${esc(u.uid)}" aria-label="Peran ${esc(u.name || "")}"><option value="member" ${u.role === "admin" ? "" : "selected"}>Anggota</option><option value="admin" ${u.role === "admin" ? "selected" : ""}>Admin</option></select></div></div>`).join("") || `<div class="empty-state">Belum ada pengguna.</div>`;
+    }
+
+    // --- menu modal ---
+    $("mnType").innerHTML = Object.entries(TYPE_LABELS).map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("");
+    const mn = { editing: null };
+    function mnToggleType() {
+      const isPage = $("mnType").value === "halaman";
+      $("mnContentWrap").classList.toggle("hidden", !isPage);
+      $("mnContribWrap").classList.toggle("hidden", isPage);
+    }
+    $("mnType").addEventListener("change", mnToggleType);
+    $("mnTitle").addEventListener("input", () => {
+      if (!mn.editing) $("mnSlug").value = $("mnTitle").value.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 30);
+    });
+    function showMnErr(m) { $("mnError").textContent = m; $("mnError").classList.add("show"); }
+    function openMenuModal(slug) {
+      mn.editing = slug || null;
+      const m = slug ? customMenu(slug) : null;
+      $("mnHead").textContent = m ? "Edit menu" : "Tambah menu";
+      $("mnTitle").value = m ? m.title : ""; $("mnSlug").value = m ? m.id : ""; $("mnSlug").disabled = !!m;
+      $("mnType").value = m ? m.type : "artikel"; $("mnType").disabled = false;
+      $("mnIcon").value = m ? m.icon || "" : "◇"; $("mnOrder").value = m && m.order != null ? m.order : 10 + S.menus.length * 10;
+      $("mnDesc").value = m ? m.description || "" : ""; $("mnContent").value = m ? m.content || "" : "";
+      $("mnVisible").checked = m ? m.visible !== false : true; $("mnContrib").checked = m ? m.allowContrib !== false : true;
+      $("mnError").classList.remove("show"); mnToggleType();
+      $("menuModal").classList.add("open");
+    }
+    function closeMenuModal() { $("menuModal").classList.remove("open"); }
+    $("mnClose").addEventListener("click", closeMenuModal);
+    $("menuModal").addEventListener("click", e => { if (e.target === $("menuModal")) closeMenuModal(); });
+    $("btnAddMenu").addEventListener("click", () => openMenuModal(null));
+    $("dynEditPage").addEventListener("click", () => openMenuModal($("dynEditPage").dataset.slug));
+    $("btnSaveMenu").addEventListener("click", async () => {
+      $("mnError").classList.remove("show");
+      if (!S.isAdmin || needFb()) return;
+      const title = $("mnTitle").value.trim(), slug = $("mnSlug").value.trim(), type = $("mnType").value;
+      if (title.length < 2) return showMnErr("Isi nama menu.");
+      if (!/^[a-z0-9][a-z0-9-]{0,29}$/.test(slug)) return showMnErr("Alamat menu hanya boleh huruf kecil, angka, dan strip.");
+      if (!mn.editing && (RESERVED.includes(slug) || customMenu(slug))) return showMnErr("Alamat menu itu sudah dipakai. Pilih yang lain.");
+      const { F, db } = S.fb;
+      const data = {
+        title, type, icon: $("mnIcon").value.trim() || "◇", order: Number($("mnOrder").value) || 0,
+        description: $("mnDesc").value.trim(), content: type === "halaman" ? $("mnContent").value : "",
+        visible: $("mnVisible").checked, allowContrib: type === "halaman" ? false : $("mnContrib").checked,
+        updatedAt: F.serverTimestamp()
+      };
+      busy($("btnSaveMenu"), true);
+      try {
+        await F.setDoc(F.doc(db, "menus", slug), data, { merge: true });
+        await loadMenus(); renderNav(); closeMenuModal(); paintMenus();
+        if (S.view.name === "dyn" && S.view.param === slug) loadDyn(slug);
+        showToast("Menu tersimpan dan langsung tampil di navigasi.");
+      } catch (err) { console.error(err); showMnErr(friendlyError(err)); }
+      finally { busy($("btnSaveMenu"), false); }
+    });
+
+    $("formSite").addEventListener("submit", async () => {
+      if (!S.isAdmin || needFb()) return;
+      const { F, db } = S.fb;
+      const vurl = $("stVideo").value.trim();
+      if (vurl && !/^https:\/\/\S+$/i.test(vurl)) { $("siteMsg").textContent = "Tautan video harus diawali https://"; $("siteMsg").classList.add("show"); return; }
+      const data = {
+        heroTitle: $("stHeroTitle").value.trim(), heroText: $("stHeroText").value.trim(), announce: $("stAnnounce").value.trim(),
+        heroVideoUrl: vurl, showHeroVideo: $("stShowVideo").checked, showStats: $("stShowStats").checked,
+        showFeatures: $("stShowFeatures").checked, showFeatured: $("stShowFeatured").checked, showJourney: $("stShowJourney").checked
+      };
+      busy($("btnSaveSite"), true);
+      try {
+        await F.setDoc(F.doc(db, "settings", "site"), data, { merge: true });
+        S.settings = { ...S.settings, ...data }; applySettings();
+        $("siteMsg").textContent = "Tampilan tersimpan. Buka Beranda untuk melihat hasilnya."; $("siteMsg").classList.add("show");
+      } catch (err) { $("siteMsg").textContent = friendlyError(err); $("siteMsg").classList.add("show"); }
+      finally { busy($("btnSaveSite"), false); }
+    });
+
+    // ===== PENGATURAN & NAVIGASI =====
+    function applySettings() {
+      const s = S.settings || {};
+      $("hero-title").textContent = s.heroTitle || DEF.heroTitle;
+      $("heroText").textContent = s.heroText || DEF.heroText;
+      $("announce").textContent = s.announce || DEF.announce;
+      const v = s.showHeroVideo && s.heroVideoUrl ? videoHTML(s.heroVideoUrl) : "";
+      $("homeVideo").innerHTML = v ? `<div class="section">${v}</div>` : "";
+      $("homeVideo").classList.toggle("hidden", !v);
+      $("secStats").classList.toggle("hidden", s.showStats === false);
+      $("secFeatures").classList.toggle("hidden", s.showFeatures === false);
+      $("secFeatured").classList.toggle("hidden", s.showFeatured === false);
+      $("secJourney").classList.toggle("hidden", s.showJourney === false);
+    }
+    function renderNav() {
+      const hidden = new Set(S.settings.hiddenBuiltins || []);
+      document.querySelectorAll("[data-builtin]").forEach(b => b.classList.toggle("hidden", hidden.has(b.dataset.builtin)));
+      $("customNav").innerHTML = S.menus.filter(m => m.visible !== false).map(m => `<button class="nav-link" data-nav="dyn" data-param="${esc(m.id)}">${esc(m.icon || "")} ${esc(m.title)}</button>`).join("");
+      $("navSaya").classList.toggle("hidden", !S.user);
+      $("navAdmin").classList.toggle("hidden", !S.isAdmin);
+      $("accAdminBtn").classList.toggle("hidden", !S.isAdmin);
+      document.querySelectorAll(".nav-link").forEach(b => b.classList.toggle("active", b.dataset.nav === S.view.name && (b.dataset.param || "") === (S.view.param || "")));
+    }
+    function renderAuthBox() {
+      const box = $("navAuth");
+      if (S.user) {
+        const name = S.user.displayName || (S.user.email || "Anggota").split("@")[0];
+        box.innerHTML = `<button class="user-chip" type="button" data-nav="akun"><span class="avatar"></span><span class="chip-name"></span></button>`;
+        box.querySelector(".avatar").textContent = name.trim().charAt(0).toUpperCase();
+        box.querySelector(".chip-name").textContent = name.split(" ")[0];
+      } else {
+        box.innerHTML = `<button class="btn btn-outline" data-open-auth="login" type="button">Masuk</button><button class="btn btn-dark" data-open-auth="register" type="button">Daftar</button>`;
+      }
+      $("heroRegister").classList.toggle("hidden", !!S.user);
+    }
+    async function loadMenus() {
+      if (!S.fb) return;
+      try {
+        const { F, db } = S.fb;
+        const snap = await F.getDocs(F.collection(db, "menus"));
+        S.menus = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.order || 0) - (b.order || 0) || String(a.title).localeCompare(String(b.title)));
+      } catch (e) { console.warn("Menu tidak dapat dimuat:", e); }
+    }
+    async function loadSettings() {
+      if (!S.fb) return;
+      try {
+        const { F, db } = S.fb;
+        const snap = await F.getDoc(F.doc(db, "settings", "site"));
+        S.settings = snap.exists() ? snap.data() : {};
+      } catch (e) { console.warn("Pengaturan tidak dapat dimuat:", e); }
+    }
+
+    // ===== ROUTER =====
+    async function loadView(name, param) {
+      S.view = { name, param: param || "" };
+      try {
+        if (name === "beranda") await loadHome();
+        else if (name === "direktori") await loadList("direktori", "direktori");
+        else if (name === "ensiklopedia") await loadList("ensiklopedia", "ensiklopedia");
+        else if (name === "dyn") await loadDyn(param);
+        else if (name === "saya") await loadMine();
+        else if (name === "admin") await loadAdmin();
+        else if (name === "akun" && S.authReady && !S.user) navigate("beranda");
+      } catch (e) { console.error(e); showToast("Gagal memuat data: " + (e.code || e.message)); }
+      renderNav();
+    }
+    window.__onView = (name, param) => { loadView(name, param); };
+    function routeFromHash() {
+      const h = location.hash.replace("#", "");
+      if (h.startsWith("m-")) navigate("dyn", h.slice(2));
+      else if (["akun", "saya", "admin"].includes(h)) navigate(h);
+    }
+
+    // ===== DELEGASI KLIK =====
+    document.addEventListener("click", e => {
+      const auth = e.target.closest("[data-open-auth]");
+      if (auth) { openModal(auth.dataset.openAuth); return; }
+      const contrib = e.target.closest("[data-contrib]");
+      if (contrib) { openEditor(contrib.dataset.contrib || ""); return; }
+      const act = e.target.closest("[data-act]");
+      if (act) { doAct(act.dataset.act, act.dataset.id); return; }
+      const entry = e.target.closest("[data-entry]");
+      if (entry) { showEntry(entry.dataset.entry); return; }
+      const atab = e.target.closest("[data-atab]");
+      if (atab) { S.adminTab = atab.dataset.atab; paintAdmin(); return; }
+      const rv = e.target.closest("[data-rv]");
+      if (rv) { S.adminFilter = rv.dataset.rv; paintReview(); return; }
+      const mact = e.target.closest("[data-menu-act]");
+      if (mact) {
+        const id = mact.dataset.id;
+        if (mact.dataset.menuAct === "edit") openMenuModal(id);
+        else if (mact.dataset.menuAct === "del") {
+          if (!confirm("Hapus menu ini? Tulisan di dalamnya tidak ikut terhapus, tetapi tidak lagi punya menu tampil.")) return;
+          if (needFb()) return;
+          const { F, db } = S.fb;
+          F.deleteDoc(F.doc(db, "menus", id)).then(async () => { await loadMenus(); renderNav(); paintMenus(); showToast("Menu dihapus."); })
+            .catch(err => showToast(friendlyError(err)));
+        }
+        return;
+      }
+    });
+    document.addEventListener("change", async e => {
+      const bt = e.target.closest("input[data-bt]");
+      if (bt) {
+        if (needFb()) return;
+        const hidden = [...document.querySelectorAll("input[data-bt]")].filter(i => !i.checked).map(i => i.dataset.bt);
+        try {
+          const { F, db } = S.fb;
+          await F.setDoc(F.doc(db, "settings", "site"), { hiddenBuiltins: hidden }, { merge: true });
+          S.settings = { ...S.settings, hiddenBuiltins: hidden }; renderNav();
+          showToast("Pengaturan menu tersimpan.");
+        } catch (err) { showToast(friendlyError(err)); }
+        return;
+      }
+      const sel = e.target.closest("select[data-uid]");
+      if (sel) {
+        if (needFb()) return;
+        const uid = sel.dataset.uid, role = sel.value;
+        if (uid === S.user.uid && role !== "admin" && !confirm("Anda akan mencabut peran admin dari akun Anda sendiri. Lanjutkan?")) { sel.value = "admin"; return; }
+        try {
+          const { F, db } = S.fb;
+          await F.updateDoc(F.doc(db, "users", uid), { role });
+          showToast("Peran diperbarui.");
+        } catch (err) { showToast(friendlyError(err)); loadUsers(); }
+      }
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") { closeModal(); closeEditor(); closeMenuModal(); }
+    });
+
+    // ===== AUTH (handler) =====
+    $("formRegister").addEventListener("submit", async () => {
+      clearMsg();
+      if (!S.fb) return showErr(NOT_READY);
+      const { A, auth } = S.fb;
+      const name = $("regName").value.trim(), email = $("regEmail").value.trim();
+      const p1 = $("regPass").value, p2 = $("regPass2").value;
+      if (name.length < 2) return showErr("Isi nama lengkap Anda.");
+      if (!email) return showErr("Isi alamat email.");
+      if (p1.length < 8) return showErr("Kata sandi minimal 8 karakter.");
+      if (p1 !== p2) return showErr("Kata sandi dan ulangannya tidak sama.");
+      const btn = $("btnRegSubmit"); busy(btn, true, "Membuat akun…");
+      try {
+        const cred = await A.createUserWithEmailAndPassword(auth, email, p1);
+        await A.updateProfile(cred.user, { displayName: name });
+        S.profile = await ensureProfile(cred.user, name);
+        try { await A.sendEmailVerification(cred.user); } catch (_) { }
+        closeModal();
+        showToast("Akun dibuat. Cek email Anda untuk verifikasi.");
+        $("formRegister").reset();
+      } catch (err) { showErr(friendlyError(err)); }
+      finally { busy(btn, false, "Buat akun"); }
+    });
+    $("formLogin").addEventListener("submit", async () => {
+      clearMsg();
+      if (!S.fb) return showErr(NOT_READY);
+      const { A, auth } = S.fb;
+      const email = $("loginEmail").value.trim(), pass = $("loginPass").value;
+      if (!email || !pass) return showErr("Isi email dan kata sandi.");
+      const btn = $("btnLoginSubmit"); busy(btn, true, "Masuk…");
+      try {
+        await A.signInWithEmailAndPassword(auth, email, pass);
+        closeModal(); $("formLogin").reset();
+        showToast("Berhasil masuk. Selamat datang!");
+      } catch (err) { showErr(friendlyError(err)); }
+      finally { busy(btn, false, "Masuk"); }
+    });
+    $("formForgot").addEventListener("submit", async () => {
+      clearMsg();
+      if (!S.fb) return showErr(NOT_READY);
+      const { A, auth } = S.fb;
+      const email = $("forgotEmail").value.trim();
+      if (!email) return showErr("Isi alamat email.");
+      const btn = $("btnForgotSubmit"); busy(btn, true, "Mengirim…");
+      try {
+        await A.sendPasswordResetEmail(auth, email);
+        showOk("Jika email terdaftar, tautan reset sudah dikirim. Cek kotak masuk/spam.");
+      } catch (err) {
+        if (err.code === "auth/invalid-email") showErr(friendlyError(err));
+        else showOk("Jika email terdaftar, tautan reset sudah dikirim. Cek kotak masuk/spam.");
+      } finally { busy(btn, false, "Kirim tautan reset"); }
+    });
+    $("btnGoogle").addEventListener("click", async () => {
+      clearMsg();
+      if (!S.fb) return showErr(NOT_READY);
+      const { A, auth } = S.fb;
+      try {
+        const result = await A.signInWithPopup(auth, new A.GoogleAuthProvider());
+        S.profile = await ensureProfile(result.user, result.user.displayName);
+        closeModal();
+        showToast("Berhasil masuk dengan Google.");
+      } catch (err) { showErr(friendlyError(err)); }
+    });
+    $("btnLogout").addEventListener("click", async () => {
+      if (needFb()) return;
+      await S.fb.A.signOut(S.fb.auth);
+      showToast("Anda telah keluar.");
+      navigate("beranda");
+    });
+    $("btnResendVerify").addEventListener("click", async () => {
+      if (!S.fb || !S.fb.auth.currentUser) return;
+      try {
+        await S.fb.A.sendEmailVerification(S.fb.auth.currentUser);
+        $("accMsg").textContent = "Email verifikasi dikirim ulang. Cek kotak masuk/spam.";
+      } catch (err) { $("accMsg").textContent = friendlyError(err); }
+      $("accMsg").classList.add("show");
+    });
+
+    async function ensureProfile(user, nameHint) {
+      try {
+        const { F, db } = S.fb;
+        const ref = F.doc(db, "users", user.uid);
+        const snap = await F.getDoc(ref);
+        if (!snap.exists()) {
+          await F.setDoc(ref, { name: nameHint || user.displayName || "", email: user.email || "", role: "member", createdAt: F.serverTimestamp() });
+        }
+        return (await F.getDoc(ref)).data();
+      } catch (e) {
+        console.warn("Profil Firestore tidak dapat diakses:", e);
+        return null;
+      }
+    }
+
+    // ===== INISIALISASI FIREBASE =====
+    async function initFirebase() {
+      const [{ initializeApp }, A, F] = await Promise.all([
+        import(FB + "firebase-app.js"), import(FB + "firebase-auth.js"), import(FB + "firebase-firestore.js")
       ]);
-      const {
-        getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-        signOut, sendEmailVerification, sendPasswordResetEmail, updateProfile,
-        GoogleAuthProvider, signInWithPopup
-      } = A;
-      const { getFirestore, doc, getDoc, setDoc, serverTimestamp } = S;
-
       const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      auth.languageCode = "id";
-      const db = getFirestore(app);
+      const auth = A.getAuth(app); auth.languageCode = "id";
+      S.fb = { A, F, auth, db: F.getFirestore(app) };
+      await Promise.all([loadSettings(), loadMenus()]);
+      S.menusReady = true; applySettings(); renderNav();
 
-      async function ensureProfile(user, nameHint) {
-        // Buat dokumen profil bila belum ada (mis. login Google pertama kali).
-        try {
-          const ref = doc(db, "users", user.uid);
-          const snap = await getDoc(ref);
-          if (!snap.exists()) {
-            await setDoc(ref, {
-              name: nameHint || user.displayName || "",
-              email: user.email || "",
-              role: "member",
-              createdAt: serverTimestamp()
-            });
-          }
-          return (await getDoc(ref)).data();
-        } catch (e) {
-          console.warn("Profil Firestore tidak dapat diakses:", e);
-          return null;
-        }
-      }
-
-      $("formRegister").addEventListener("submit", async e => {
-        e.preventDefault(); clearMsg();
-        const name = $("regName").value.trim();
-        const email = $("regEmail").value.trim();
-        const p1 = $("regPass").value, p2 = $("regPass2").value;
-        if (name.length < 2) return showErr("Isi nama lengkap Anda.");
-        if (!email) return showErr("Isi alamat email.");
-        if (p1.length < 8) return showErr("Kata sandi minimal 8 karakter.");
-        if (p1 !== p2) return showErr("Kata sandi dan ulangannya tidak sama.");
-        const btn = $("btnRegSubmit"); busy(btn, true, "Membuat akun…");
-        try {
-          const cred = await createUserWithEmailAndPassword(auth, email, p1);
-          await updateProfile(cred.user, { displayName: name });
-          await ensureProfile(cred.user, name);
-          try { await sendEmailVerification(cred.user); } catch (_) {}
-          closeModal();
-          showToast("Akun dibuat. Cek email Anda untuk verifikasi.");
-          $("formRegister").reset();
-        } catch (err) { showErr(friendlyError(err)); }
-        finally { busy(btn, false, "Buat akun"); }
-      });
-
-      $("formLogin").addEventListener("submit", async e => {
-        e.preventDefault(); clearMsg();
-        const email = $("loginEmail").value.trim(), pass = $("loginPass").value;
-        if (!email || !pass) return showErr("Isi email dan kata sandi.");
-        const btn = $("btnLoginSubmit"); busy(btn, true, "Masuk…");
-        try {
-          await signInWithEmailAndPassword(auth, email, pass);
-          closeModal(); $("formLogin").reset();
-          showToast("Berhasil masuk. Selamat datang!");
-        } catch (err) { showErr(friendlyError(err)); }
-        finally { busy(btn, false, "Masuk"); }
-      });
-
-      $("formForgot").addEventListener("submit", async e => {
-        e.preventDefault(); clearMsg();
-        const email = $("forgotEmail").value.trim();
-        if (!email) return showErr("Isi alamat email.");
-        const btn = $("btnForgotSubmit"); busy(btn, true, "Mengirim…");
-        try {
-          await sendPasswordResetEmail(auth, email);
-          showOk("Jika email terdaftar, tautan reset sudah dikirim. Cek kotak masuk/spam.");
-        } catch (err) {
-          // Jangan bocorkan apakah email terdaftar.
-          if (err.code === "auth/invalid-email") showErr(friendlyError(err));
-          else showOk("Jika email terdaftar, tautan reset sudah dikirim. Cek kotak masuk/spam.");
-        } finally { busy(btn, false, "Kirim tautan reset"); }
-      });
-
-      $("btnGoogle").addEventListener("click", async () => {
-        clearMsg();
-        try {
-          const result = await signInWithPopup(auth, new GoogleAuthProvider());
-          await ensureProfile(result.user, result.user.displayName);
-          closeModal();
-          showToast("Berhasil masuk dengan Google.");
-        } catch (err) { showErr(friendlyError(err)); }
-      });
-
-      $("btnLogout").addEventListener("click", async () => {
-        await signOut(auth);
-        showToast("Anda telah keluar.");
-        navigate("beranda");
-      });
-
-      $("btnResendVerify").addEventListener("click", async () => {
-        const user = auth.currentUser;
-        if (!user) return;
-        try {
-          await sendEmailVerification(user);
-          $("accMsg").textContent = "Email verifikasi dikirim ulang. Cek kotak masuk/spam.";
-          $("accMsg").classList.add("show");
-        } catch (err) {
-          $("accMsg").textContent = friendlyError(err);
-          $("accMsg").classList.add("show");
-        }
-      });
-
-      function fmtDate(ts) {
-        try { return ts?.toDate ? ts.toDate().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : "—"; }
-        catch { return "—"; }
-      }
-
-      onAuthStateChanged(auth, async user => {
-        const box = $("navAuth");
+      A.onAuthStateChanged(auth, async user => {
+        S.user = user; S.profile = null; S.isAdmin = false; S.cache = {};
         if (user) {
           const name = user.displayName || (user.email || "Anggota").split("@")[0];
-          const initial = name.trim().charAt(0).toUpperCase();
-          box.innerHTML = `<button class="user-chip" id="chipAccount" type="button"><span class="avatar"></span><span class="chip-name"></span></button>`;
-          box.querySelector(".avatar").textContent = initial;
-          box.querySelector(".chip-name").textContent = name.split(" ")[0];
-          $("chipAccount").addEventListener("click", () => navigate("akun"));
-
+          S.profile = await ensureProfile(user, name);
+          S.isAdmin = !!S.profile && S.profile.role === "admin";
           $("accName").textContent = name;
           $("accEmail").textContent = user.email || "—";
-          $("accVerified").innerHTML = user.emailVerified
-            ? '<span class="badge ok">Terverifikasi</span>'
-            : '<span class="badge warn">Belum diverifikasi</span>';
+          $("accVerified").innerHTML = user.emailVerified ? '<span class="badge ok">Terverifikasi</span>' : '<span class="badge warn">Belum diverifikasi</span>';
           $("btnResendVerify").classList.toggle("hidden", user.emailVerified);
           $("accMsg").classList.remove("show");
-          $("accJoined").textContent = user.metadata?.creationTime
-            ? new Date(user.metadata.creationTime).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : "—";
-
-          const profile = await ensureProfile(user, name);
-          if (profile) {
-            $("accRole").textContent = profile.role === "admin" ? "Admin" : "Anggota";
-            if (profile.createdAt) $("accJoined").textContent = fmtDate(profile.createdAt);
-          }
-        } else {
-          $("navAuth").innerHTML = `<button class="btn btn-outline" id="btnOpenLogin2" type="button">Masuk</button><button class="btn btn-dark" id="btnOpenRegister2" type="button">Daftar</button>`;
-          $("btnOpenLogin2").addEventListener("click", () => openModal("login"));
-          $("btnOpenRegister2").addEventListener("click", () => openModal("register"));
-          if (document.getElementById("view-akun").classList.contains("active")) navigate("beranda");
+          $("accRole").textContent = S.isAdmin ? "Admin" : "Anggota";
+          $("accJoined").textContent = (S.profile && fmtTs(S.profile.createdAt)) || (user.metadata && user.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : "—");
         }
+        S.authReady = true;
+        renderAuthBox(); renderNav();
+        const v = S.view.name;
+        if ((v === "saya" && !user) || (v === "admin" && !S.isAdmin) || (v === "akun" && !user)) navigate("beranda");
+        else if (!S.routed) { S.routed = true; routeFromHash(); }
+        loadView(S.view.name, S.view.param);
       });
-    } catch (loadErr) {
-      console.error("Firebase gagal dimuat:", loadErr);
-      const warn = () => { openModal("login"); showErr("Layanan login gagal dimuat. Periksa koneksi internet, matikan pemblokir iklan/VPN, lalu muat ulang halaman (Ctrl+F5)."); };
-      ["formLogin", "formRegister", "formForgot"].forEach(id => $(id).addEventListener("submit", warn));
-      $("btnGoogle").addEventListener("click", warn);
     }
+
+    // Tampilkan data contoh dulu, lalu sambungkan Firebase.
+    loadView(S.view.name, S.view.param);
+    initFirebase().catch(err => {
+      console.error("Firebase gagal dimuat:", err);
+      showToast("Layanan online gagal dimuat. Matikan pemblokir iklan/VPN lalu muat ulang (Ctrl+F5).");
+    });
   </script>
 </body>
 </html>
